@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroField from "@/components/HeroField";
-import PremiumEffectsShelf from "@/components/PremiumEffectsShelf";
+import FullEffectsAtlas from "@/components/FullEffectsAtlas";
 
 const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
 const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
@@ -137,6 +137,7 @@ export default function Home() {
                 <button onClick={() => goTo("scroll")}>اسکرول</button>
                 <button onClick={() => goTo("field")}>میدان</button>
                 <button onClick={() => goTo("controls")}>کنترل‌ها</button>
+                <button onClick={() => goTo("all-effects")}>۲۳ افکت</button>
               </nav>
               <div className="status-pill"><i /> میدان فعال</div>
             </header>
@@ -226,7 +227,7 @@ export default function Home() {
             </div>
           </section>
 
-          <PremiumEffectsShelf />
+          <FullEffectsAtlas />
 
           <section className="closing-section reveal">
             <div className="closing-mark"><Sparkles size={25} /></div>
