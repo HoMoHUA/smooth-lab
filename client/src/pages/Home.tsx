@@ -11,12 +11,14 @@ const MOTION_ORBIT = "/manus-storage/smooth-motion-orbit_8316edb1.png";
 const MARK = "/manus-storage/smooth-hero-mark_fccd07e6.png";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+const formatFa = (value: number, fractionDigits = 0) => new Intl.NumberFormat("fa-IR", { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }).format(value);
 
 export default function Home() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const easingRef = useRef(0.085);
+  const visualScrollRef = useRef(0);
   const [easing, setEasing] = useState(0.085);
   const [smoothEnabled, setSmoothEnabled] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -67,6 +69,7 @@ export default function Home() {
 
     const onScroll = () => {
       target = window.scrollY;
+      visualScrollRef.current = target;
       if (!shouldSmooth) {
         revealAndParallax();
         reportProgress(target);
@@ -86,6 +89,7 @@ export default function Home() {
       const tick = () => {
         current += (target - current) * easingRef.current;
         if (Math.abs(target - current) < 0.1) current = target;
+        visualScrollRef.current = current;
         content.style.transform = `translate3d(0, ${-current}px, 0)`;
         revealAndParallax();
         reportProgress(current);
@@ -110,7 +114,7 @@ export default function Home() {
   const goTo = (id: string) => {
     const target = document.getElementById(id);
     if (!target) return;
-    const destination = target.getBoundingClientRect().top + window.scrollY - 28;
+    const destination = target.getBoundingClientRect().top + visualScrollRef.current - 28;
     window.scrollTo({ top: destination, behavior: smoothEnabled ? "auto" : "smooth" });
   };
 
@@ -144,14 +148,14 @@ export default function Home() {
 
             <div className="hero-layout">
               <div className="hero-rail" aria-hidden="true">
-                <span>01</span>
+                <span>۰۱</span>
                 <div />
-                <span>SCROLL / MOUSE</span>
+                <span>پیمایش / نشانگر</span>
               </div>
               <div className="hero-copy">
                 <p className="micro-label">رابط‌های دیجیتال با حرکت هدفمند</p>
                 <h1>حرکت را لمس کنید،<br /><em>نه این‌که فقط تماشا کنید.</em></h1>
-                <p className="hero-description">این صحنه هم‌زمان اسکرول نرم، میدان ذرات واکنشی و نشانگر دارای اینرسی را آزمایش می‌کند. موس را در Hero حرکت دهید و سپس صفحه را اسکرول کنید.</p>
+                <p className="hero-description">این صحنه هم‌زمان اسکرول نرم، میدان ذرات واکنشی و نشانگر دارای اینرسی را آزمایش می‌کند. نشانگر را در بخش نخست حرکت دهید و سپس صفحه را اسکرول کنید.</p>
                 <div className="hero-actions">
                   <Button className="lab-primary" onClick={() => goTo("scroll")}>
                     شروع آزمایش <ArrowDown size={16} />
@@ -162,21 +166,21 @@ export default function Home() {
                 </div>
               </div>
               <aside className="hero-readout" aria-label="داده‌های زندهٔ آزمایش">
-                <span>INERTIA</span><strong>{easing.toFixed(3)}</strong>
-                <span>SCROLL</span><strong>{scrollProgress}%</strong>
-                <span>MODE</span><strong>{smoothEnabled ? "SMOOTH" : "NATIVE"}</strong>
+                <span>اینرسی</span><strong>{formatFa(easing, 3)}</strong>
+                <span>پیمایش</span><strong>{formatFa(scrollProgress)}٪</strong>
+                <span>حالت</span><strong>{smoothEnabled ? "نرم" : "بومی"}</strong>
               </aside>
             </div>
             <div className="hero-footnote"><span /> حرکت موس برای میدان نیرو، پیمایش برای اینرسی</div>
           </section>
 
           <section className="chapter chapter-scroll reveal" id="scroll">
-            <div className="chapter-index">02 <span>SCROLL PHYSICS</span></div>
+            <div className="chapter-index">۰۲ <span>فیزیک پیمایش</span></div>
             <div className="chapter-copy">
               <p className="micro-label">رفتار اسکرول</p>
               <h2>محتوا به موقعیت واقعی صفحه نمی‌پرد؛ <em>با آن هم‌جهت می‌شود.</em></h2>
               <p>موقعیت native مرورگر به‌عنوان هدف نگه داشته می‌شود. یک حلقهٔ انیمیشن، محتوای صفحه را با درون‌یابی نمایی به آن هدف نزدیک می‌کند؛ در نتیجه حرکت، تأخیر ظریف اما قابل کنترل دارد.</p>
-              <div className="formula"><span>displayed</span><i>→</i><b>lerp(current, native, easing)</b></div>
+              <div className="formula" dir="ltr"><span>نمایش</span><i>→</i><b>lerp(جاری، بومی، نرمی)</b></div>
             </div>
             <figure className="scroll-figure parallax-card">
               <img src={SCROLL_FLOW} alt="لایه‌های انتزاعی جریان اسکرول" />
@@ -194,17 +198,17 @@ export default function Home() {
                 <span className="specimen-number">A</span>
                 <h3>ورودی</h3>
                 <p>موقعیت نشانگر از فضای صفحه به مختصات محلی Hero تبدیل می‌شود.</p>
-                <div className="specimen-line"><i /> POINTER</div>
+                <div className="specimen-line"><i /> موقعیت نشانگر</div>
               </article>
               <article className="specimen visual-specimen reveal parallax-card">
                 <img src={MOTION_ORBIT} alt="مدار انتزاعی ذرات حول میدان نیرو" />
-                <span className="image-caption">LOCAL FORCE FIELD</span>
+                <span className="image-caption">میدان نیروی محلی</span>
               </article>
               <article className="specimen reveal parallax-card">
                 <span className="specimen-number">B</span>
                 <h3>واکنش</h3>
                 <p>شدت دافعه با فاصله کاهش می‌یابد و سرعت ذرات با damping کنترل می‌شود.</p>
-                <div className="specimen-line"><i /> DAMPING 0.966</div>
+                <div className="specimen-line"><i /> میرایی ۰٫۹۶۶</div>
               </article>
             </div>
           </section>
@@ -216,18 +220,18 @@ export default function Home() {
               <p>این کنترل فقط برای تست است. مقدار کمتر، پیگیری سنگین‌تر و مقدار بالاتر، واکنش سریع‌تر ایجاد می‌کند.</p>
             </div>
             <div className="control-panel">
-              <div className="control-top"><span>INERTIA VALUE</span><strong>{easing.toFixed(3)}</strong></div>
+              <div className="control-top"><span>میزان اینرسی</span><strong>{easing.toFixed(3)}</strong></div>
               <input aria-label="میزان اینرسی اسکرول" type="range" min="0.035" max="0.18" step="0.005" value={easing} onChange={(event) => setEasing(Number(event.target.value))} />
-              <div className="range-labels"><span>HEAVY</span><span>DIRECT</span></div>
+              <div className="range-labels"><span>سنگین</span><span>مستقیم</span></div>
               <div className="toggle-row">
-                <div><span>SMOOTH SCROLL</span><small>{smoothEnabled ? "فعال روی دسکتاپ" : "اسکرول native"}</small></div>
+                <div><span>پیمایش نرم</span><small>{smoothEnabled ? "فعال روی دسکتاپ" : "پیمایش بومی"}</small></div>
                 <button className={`lab-toggle ${smoothEnabled ? "is-on" : ""}`} onClick={() => setSmoothEnabled((value) => !value)} aria-pressed={smoothEnabled}><i /></button>
               </div>
               <Button variant="outline" className="reset-button" onClick={resetLab}><RotateCcw size={15} /> بازنشانی آزمایش</Button>
             </div>
           </section>
 
-          <FullEffectsAtlas />
+          <FullEffectsAtlas onNavigate={goTo} />
 
           <section className="closing-section reveal">
             <div className="closing-mark"><Sparkles size={25} /></div>
