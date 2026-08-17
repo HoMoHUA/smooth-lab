@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import HeroField from "@/components/HeroField";
 import ReferenceEffectsKit from "@/components/ReferenceEffectsKit";
 import ScrollReferenceModules from "@/components/ScrollReferenceModules";
+import DesignSystemLanding from "@/components/DesignSystemLanding";
 
 const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
 const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
@@ -141,13 +142,13 @@ export default function Home() {
             <header className="hero-header">
               <button className="mark-button" onClick={() => goTo("top")} aria-label="بازگشت به ابتدای صفحه">
                 <img src={MARK} alt="" />
-                <span>Smooth Hero Lab</span>
+                <span>NeXTPixel Motion System</span>
               </button>
               <nav aria-label="ناوبری آزمایشگاه">
-                <button onClick={() => goTo("scroll")}>اسکرول</button>
-                <button onClick={() => goTo("field")}>میدان</button>
-                <button onClick={() => goTo("controls")}>کنترل‌ها</button>
-                <button onClick={() => goTo("reference-kit")}>۲۳ افکت</button>
+                <button onClick={() => goTo("ds-overview")}>سیستم</button>
+                <button onClick={() => goTo("scroll")}>فناوری</button>
+                <button onClick={() => goTo("controls")}>تنظیمات</button>
+                <button onClick={() => goTo("reference-kit")}>کتابخانه</button>
               </nav>
               <div className="status-pill"><i /> میدان فعال</div>
             </header>
@@ -179,6 +180,8 @@ export default function Home() {
             </div>
             <div className="hero-footnote"><span /> حرکت موس برای میدان نیرو، پیمایش برای اینرسی</div>
           </section>
+
+          <DesignSystemLanding onNavigate={goTo} />
 
           <section className="chapter chapter-scroll reveal" id="scroll">
             <div className="chapter-index">۰۲ <span>فیزیک پیمایش</span></div>
