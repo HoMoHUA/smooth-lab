@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroField from "@/components/HeroField";
-import FullEffectsAtlas from "@/components/FullEffectsAtlas";
+import ReferenceEffectsKit from "@/components/ReferenceEffectsKit";
+import ScrollReferenceModules from "@/components/ScrollReferenceModules";
 
 const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
 const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
@@ -78,7 +79,10 @@ export default function Home() {
 
     const observer = new ResizeObserver(refreshHeight);
     observer.observe(content);
+    const mutationObserver = new MutationObserver(() => requestAnimationFrame(refreshHeight));
+    mutationObserver.observe(content, { childList: true, subtree: true });
     refreshHeight();
+    const settleHeight = window.setTimeout(refreshHeight, 180);
     revealAndParallax();
     reportProgress(target);
     window.addEventListener("resize", refreshHeight);
@@ -104,6 +108,8 @@ export default function Home() {
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      mutationObserver.disconnect();
+      window.clearTimeout(settleHeight);
       window.removeEventListener("resize", refreshHeight);
       window.removeEventListener("scroll", onScroll);
       wrapper.dataset.smooth = "false";
@@ -141,7 +147,7 @@ export default function Home() {
                 <button onClick={() => goTo("scroll")}>اسکرول</button>
                 <button onClick={() => goTo("field")}>میدان</button>
                 <button onClick={() => goTo("controls")}>کنترل‌ها</button>
-                <button onClick={() => goTo("all-effects")}>۲۳ افکت</button>
+                <button onClick={() => goTo("reference-kit")}>۲۳ افکت</button>
               </nav>
               <div className="status-pill"><i /> میدان فعال</div>
             </header>
@@ -231,7 +237,8 @@ export default function Home() {
             </div>
           </section>
 
-          <FullEffectsAtlas onNavigate={goTo} />
+          <ReferenceEffectsKit onNavigate={goTo} />
+          <ScrollReferenceModules />
 
           <section className="closing-section reveal">
             <div className="closing-mark"><Sparkles size={25} /></div>
