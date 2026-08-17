@@ -1,0 +1,77 @@
+transform: none
+transform: none
+transform: unset
+transform: unset
+transition: unset
+transform: none !important
+transition: background-color .1s, color .1s
+transform: none
+transform: translate(0)
+transition: all .3s
+transform: translate3d(0, 0, 0)
+transform: translate(0, -50%)
+transform: translate(-50%)
+animation: .8s linear infinite spin
+animation="over-left"] .w-nav-overlay 
+animation="over-left"] .w-nav-overlay, .w-nav[data-animation="over-left"] [data-nav-menu-open] 
+animation="over-right"] .w-nav-overlay 
+animation="over-right"] .w-nav-overlay, .w-nav[data-animation="over-right"] [data-nav-menu-open] 
+@keyframes spin 
+transform: rotate(0)
+transform: rotate(360deg)
+transform: uppercase
+transition: color .25s
+transform
+transition: padding .5s
+transition: opacity .2s
+transform: translate(-50%, -50%)
+transform: translateX(-50%)
+transform-origin: top
+transform: scaleY(0)
+transform
+transform: perspective(1000px)
+transform
+mix-blend-mode: difference
+transform: rotate(180deg)
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(var(--blur))
+backdrop-filter: blur(var(--blur))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / var(--ratio)))
+backdrop-filter: blur(calc(var(--blur) / var(--ratio)))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+backdrop-filter: blur(calc(var(--blur) / (var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio))))
+transform: uppercase
+backdrop-filter: blur(5px)
+backdrop-filter: blur(5px)
+transform: translate(2.5rem)
+animation 
+animation 
+transition: opacity .3s
+animation 
+transition: opacity .3s
+animation-wrap 
+animation-wrap.is--bottom 
+animation-wrap.is--top 
+animation 
+transition: background-position .9s
+transition: background-position 1s
+transition: opacity .2s
+transform: uppercase
+transition: color .2s
+transition: color .25s
+animation, .bg_animation.is--none 

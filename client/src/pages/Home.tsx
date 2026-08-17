@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroField from "@/components/HeroField";
+import PremiumEffectsShelf from "@/components/PremiumEffectsShelf";
 
 const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
 const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
@@ -224,6 +225,8 @@ export default function Home() {
               <Button variant="outline" className="reset-button" onClick={resetLab}><RotateCcw size={15} /> بازنشانی آزمایش</Button>
             </div>
           </section>
+
+          <PremiumEffectsShelf />
 
           <section className="closing-section reveal">
             <div className="closing-mark"><Sparkles size={25} /></div>
