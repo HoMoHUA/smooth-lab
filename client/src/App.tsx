@@ -4,13 +4,18 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import LabsStudy from "./pages/LabsStudy";
+import { Route, Switch } from "wouter";
 
 export default function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
-          <Home />
+          <Switch>
+            <Route path="/labs-study" component={LabsStudy} />
+            <Route component={Home} />
+          </Switch>
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
