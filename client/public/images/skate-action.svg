@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#172247"/><stop offset=".62" stop-color="#6b5bd8"/><stop offset="1" stop-color="#ff9e75"/></linearGradient>
+<linearGradient id="ramp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3566"/><stop offset="1" stop-color="#111521"/></linearGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="1180" cy="330" r="150" fill="#ffe48a" fill-opacity=".9"/>
+<circle cx="1180" cy="330" r="230" fill="none" stroke="#ffe48a" stroke-opacity=".25"/>
+<g stroke="#fff" stroke-opacity=".08"><path d="M0 60 H1600"/><path d="M0 120 H1600"/><path d="M0 180 H1600"/><path d="M0 240 H1600"/><path d="M0 300 H1600"/><path d="M0 360 H1600"/><path d="M0 420 H1600"/><path d="M0 480 H1600"/><path d="M0 540 H1600"/><path d="M0 600 H1600"/><path d="M0 660 H1600"/></g>
+<path d="M0 720 H520 C 760 720 790 650 800 650 C 810 650 840 720 1080 720 H1600 V900 H0Z" fill="url(#ramp)"/>
+<path d="M0 720 H520 C 760 720 790 650 800 650 C 810 650 840 720 1080 720 H1600" fill="none" stroke="#d7ff4f" stroke-width="5"/>
+<ellipse cx="800" cy="736" rx="170" ry="12" fill="#000" fill-opacity=".35"/>
+</svg>

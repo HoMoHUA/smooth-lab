@@ -32,6 +32,8 @@ export default function HeroField() {
     let height = 0;
     let frame = 0;
     let lastTime = 0;
+    let running = false;
+    let onScreen = true;
 
     const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
     const lerp = (start: number, end: number, amount: number) => start + (end - start) * amount;
@@ -54,9 +56,12 @@ export default function HeroField() {
       canvas.width = Math.max(1, Math.floor(width * ratio));
       canvas.height = Math.max(1, Math.floor(height * ratio));
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      particles.length = 0;
       const count = clamp(Math.floor((width * height) / 5600), 145, 440);
-      for (let index = 0; index < count; index += 1) particles.push(createParticle());
+      if (particles.length > count) particles.length = count;
+      while (particles.length < count) particles.push(createParticle());
+    };
+
+    const resetPointer = () => {
       pointer.x = width * 0.6;
       pointer.y = height * 0.49;
       pointer.targetX = pointer.x;
@@ -136,10 +141,27 @@ export default function HeroField() {
         drawParticle(particle, time);
       });
       drawOrbit(time);
-      frame = requestAnimationFrame(animate);
+      frame = running ? requestAnimationFrame(animate) : 0;
+    };
+
+    const start = () => {
+      if (running || media.matches || !onScreen || document.hidden) return;
+      running = true;
+      frame = requestAnimationFrame((time) => {
+        lastTime = time;
+        animate(time);
+      });
+    };
+
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+      frame = 0;
     };
 
     const move = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      if (!pointer.active) enter(event);
       const bounds = host.getBoundingClientRect();
       pointer.targetX = event.clientX - bounds.left;
       pointer.targetY = event.clientY - bounds.top;
@@ -147,7 +169,8 @@ export default function HeroField() {
       ghost.targetY = event.clientY;
     };
 
-    const enter = () => {
+    const enter = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
       pointer.active = true;
       cursor.classList.add("is-visible");
     };
@@ -157,24 +180,55 @@ export default function HeroField() {
       cursor.classList.remove("is-visible");
     };
 
+    const drawStatic = () => {
+      context.clearRect(0, 0, width, height);
+      particles.forEach((particle) => drawParticle(particle, 0));
+    };
+
+    const onResize = () => {
+      resize();
+      if (media.matches) drawStatic();
+    };
+
+    // The loop only runs while the hero is visible and the tab is active.
+    const visibility = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      if (onScreen) start();
+      else stop();
+    });
+    const onVisibilityChange = () => (document.hidden ? stop() : start());
+    const onMotionChange = () => {
+      if (media.matches) {
+        stop();
+        drawStatic();
+      } else {
+        start();
+      }
+    };
+
     resize();
+    resetPointer();
     host.addEventListener("pointerenter", enter);
     host.addEventListener("pointermove", move);
     host.addEventListener("pointerleave", leave);
-    window.addEventListener("resize", resize);
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(host);
+    visibility.observe(host);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    media.addEventListener("change", onMotionChange);
 
-    if (media.matches) {
-      particles.forEach((particle) => drawParticle(particle, 0));
-    } else {
-      animate(0);
-    }
+    if (media.matches) drawStatic();
+    else start();
 
     return () => {
-      cancelAnimationFrame(frame);
+      stop();
+      visibility.disconnect();
+      resizeObserver.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      media.removeEventListener("change", onMotionChange);
       host.removeEventListener("pointerenter", enter);
       host.removeEventListener("pointermove", move);
       host.removeEventListener("pointerleave", leave);
-      window.removeEventListener("resize", resize);
     };
   }, []);
 

@@ -11,6 +11,7 @@ const workCards = [
   ["Vertex", "#ff6f71", "#6f1726"],
   ["Aurelius", "#63c5a6", "#125446"],
 ];
+const marqueeWords = ["DESIGN", "✦", "CODE", "✦", "MOTION", "✦"];
 const sliderItems = [
   ["Strategy before decoration.", "#d7ff45"],
   ["Systems that keep moving.", "#82b9ff"],
@@ -18,12 +19,16 @@ const sliderItems = [
 ];
 
 const clamp = (min: number, value: number, max: number) => Math.min(max, Math.max(min, value));
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const formatCounter = (value: number, digits = 0) => new Intl.NumberFormat("fa-IR", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
 
 export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitProps) {
   const rootRef = useRef<HTMLElement | null>(null);
   const cursorZoneRef = useRef<HTMLDivElement | null>(null);
+  const scrambleFrame = useRef(0);
+  const arcOffset = useRef(0);
   const [visible, setVisible] = useState(false);
+  const [inView, setInView] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [slide, setSlide] = useState(0);
   const [counts, setCounts] = useState([0, 0, 0]);
@@ -43,9 +48,19 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setSlide((active) => (active + 1) % sliderItems.length), 4000);
-    return () => window.clearInterval(timer);
+    const root = rootRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: "20% 0px 20% 0px" });
+    observer.observe(root);
+    return () => observer.disconnect();
   }, []);
+
+  // Restarts whenever the slide changes, so a manual selection gets a full interval.
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const timer = window.setTimeout(() => setSlide((active) => (active + 1) % sliderItems.length), 4000);
+    return () => window.clearTimeout(timer);
+  }, [slide]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -66,11 +81,16 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
     if (!root) return;
     const countTarget = root.querySelector<HTMLElement>("[data-rk-counts]");
     if (!countTarget) return;
+    const targets = [72, 98, 8.2];
+    let frame = 0;
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
-      const targets = [72, 98, 8.2];
+      observer.disconnect();
+      if (prefersReducedMotion()) {
+        setCounts(targets);
+        return;
+      }
       const start = performance.now();
-      let frame = 0;
       const tick = (now: number) => {
         const progress = clamp(0, (now - start) / 2800, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
@@ -78,29 +98,35 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
         if (progress < 1) frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
-      observer.disconnect();
-      return () => cancelAnimationFrame(frame);
     }, { threshold: 0.45 });
     observer.observe(countTarget);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    if (!root || !inView) return;
     let frame = 0;
-    let offset = 0;
+    let offset = arcOffset.current;
     let lastTime = performance.now();
     let lastScroll = window.scrollY;
     let speedFactor = 1;
+    const reduced = prefersReducedMotion();
     const arc = root.querySelector<HTMLElement>("[data-rk-arc]");
+    const wordElements = Array.from(root.querySelectorAll<HTMLElement>("[data-rk-word]"));
+    const parallaxElements = Array.from(root.querySelectorAll<HTMLElement>("[data-rk-parallax]"));
+    const workElements = Array.from(root.querySelectorAll<HTMLElement>("[data-rk-work]"));
+    const hero = root.querySelector<HTMLElement>("[data-rk-hero]");
 
     const render = (now: number) => {
       const delta = Math.min(34, now - lastTime);
       lastTime = now;
       const scrollDelta = window.scrollY - lastScroll;
       lastScroll = window.scrollY;
-      root.querySelectorAll<HTMLElement>("[data-rk-word]").forEach((word) => {
+      wordElements.forEach((word) => {
         const parent = word.parentElement;
         if (!parent) return;
         const rect = parent.getBoundingClientRect();
@@ -109,20 +135,19 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
         const local = clamp(0, progress * 1.65 - (index / Math.max(words.length - 1, 1)) * 0.65, 1);
         word.style.opacity = String(0.15 + local * 0.85);
       });
-      root.querySelectorAll<HTMLElement>("[data-rk-parallax]").forEach((media) => {
+      parallaxElements.forEach((media) => {
         const parent = media.parentElement;
         if (!parent) return;
         const rect = parent.getBoundingClientRect();
         const progress = clamp(0, (window.innerHeight - rect.top) / (window.innerHeight + rect.height), 1);
-        media.style.setProperty("--rk-parallax-y", `${-10 + progress * 20}%`);
+        media.style.setProperty("--rk-parallax-y", `${-8 + progress * 16}%`);
       });
-      const hero = root.querySelector<HTMLElement>("[data-rk-hero]");
       if (hero) {
         const rect = hero.getBoundingClientRect();
         const progress = clamp(0, -rect.top / Math.max(window.innerHeight, 1), 1);
         hero.style.transform = `translateY(${progress * 10}vh) scale(${1 - progress * 0.02})`;
       }
-      root.querySelectorAll<HTMLElement>("[data-rk-work]").forEach((card) => {
+      workElements.forEach((card) => {
         const rect = card.getBoundingClientRect();
         const incoming = clamp(0, (window.innerHeight - rect.top) / (window.innerHeight * 0.72), 1);
         const recede = clamp(0, (window.innerHeight * 0.1 - rect.top) / (window.innerHeight * 0.65), 1);
@@ -140,7 +165,8 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
         const target = 1 + clamp(-8, scrollDelta / Math.max(delta, 1), 8) * 2.2;
         speedFactor += (target - speedFactor) * 0.06;
         speedFactor += (1 - speedFactor) * 0.025;
-        offset += pxPerMs * delta * speedFactor;
+        if (!reduced) offset += pxPerMs * delta * speedFactor;
+        arcOffset.current = offset;
         items.forEach((item, index) => {
           let xArc = ((index * spacing - offset) % total + total) % total;
           if (xArc >= total / 2) xArc -= total;
@@ -158,31 +184,38 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
     };
     frame = requestAnimationFrame(render);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [inView]);
 
   const scramble = () => {
     const finalText = "View Work";
     const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let tick = 0;
+    cancelAnimationFrame(scrambleFrame.current);
+    if (prefersReducedMotion()) {
+      setCursorText(finalText);
+      return;
+    }
     const animate = () => {
       const text = Array.from(finalText).map((char, index) => char === " " || index / finalText.length < tick / 12 ? char : glyphs[Math.floor(Math.random() * glyphs.length)]).join("");
       setCursorText(text);
       tick += 1;
-      if (tick <= 12) requestAnimationFrame(animate);
+      if (tick <= 12) scrambleFrame.current = requestAnimationFrame(animate);
       else setCursorText(finalText);
     };
     animate();
   };
+
+  useEffect(() => () => cancelAnimationFrame(scrambleFrame.current), []);
 
   const onCursorMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     setCursor({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, active: true });
   };
 
-  const getChars = (text: string) => Array.from(text).map((character, index) => <i key={`${text}-${index}`} style={{ transitionDelay: `${index * 14}ms` }}>{character === " " ? "\u00a0" : character}</i>);
+  const getChars = (text: string) => Array.from(text).map((character, index) => <i key={`${text}-${index}`} style={{ "--i": index, transitionDelay: `${index * 14}ms` } as React.CSSProperties}>{character === " " ? "\u00a0" : character}</i>);
 
   return (
-    <section ref={rootRef} className={`reference-kit ${visible ? "is-visible" : ""}`} id="reference-kit" dir="rtl">
+    <section ref={rootRef} className={`reference-kit ${visible ? "is-visible" : ""} ${inView ? "is-in-view" : ""}`} id="reference-kit" dir="rtl">
       <header className="rk-hero" id="rk-hero" data-rk-hero>
         <nav className="rk-nav"><strong>Effects Kit</strong><button type="button" onClick={() => onNavigate("rk-index")}>مشاهده همهٔ افکت‌ها</button></nav>
         <span className="rk-plus rk-plus--one">＋</span><span className="rk-plus rk-plus--two">＋</span><span className="rk-plus rk-plus--three">＋</span>
@@ -199,7 +232,7 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
 
         <section className="rk-section" id="rk-marker"><header><h2>Marker wipe</h2><p>هر خط با currentColor پوشانده می‌شود، متن ظاهر می‌شود و پوشش از سمت دیگر خارج می‌شود.</p></header><div className="rk-demo rk-marker-demo"><span className="rk-label">03 / Line highlight</span><div className="rk-marker-copy" data-rk-marker><span style={{ "--rk-i": 0 } as React.CSSProperties}><b>Design that ships.</b></span><span style={{ "--rk-i": 1 } as React.CSSProperties}><b>Code that scales.</b></span><span style={{ "--rk-i": 2 } as React.CSSProperties}><b>Motion with purpose.</b></span></div></div></section>
 
-        <section className="rk-section" id="rk-marquee"><header><h2>Marquees</h2><p>یک marquee مستقیم با توقف روی hover و یک مسیر سهمی responsive که با سرعت اسکرول واکنش نشان می‌دهد.</p></header><div className="rk-demo rk-marquee-demo"><span className="rk-label">04 / Flat marquee</span><div className="rk-flat-marquee"><div><span>DESIGN</span><span>✦</span><span>CODE</span><span>✦</span><span>MOTION</span><span>✦</span><span>DESIGN</span><span>✦</span><span>CODE</span><span>✦</span><span>MOTION</span><span>✦</span></div></div></div><div className="rk-demo rk-arc-demo"><span className="rk-label">05 / Arc marquee</span><div className="rk-arc" data-rk-arc data-rk-arc-trigger>{["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT"].map((label, index) => <i data-rk-arc-item key={label} className={`rk-arc-item rk-arc-item--${index + 1}`}>{label}</i>)}</div></div></section>
+        <section className="rk-section" id="rk-marquee"><header><h2>Marquees</h2><p>یک marquee مستقیم با توقف روی hover و یک مسیر سهمی responsive که با سرعت اسکرول واکنش نشان می‌دهد.</p></header><div className="rk-demo rk-marquee-demo"><span className="rk-label">04 / Flat marquee</span><div className="rk-flat-marquee"><div>{Array.from({ length: 4 }, (_, copy) => marqueeWords.map((word, index) => <span aria-hidden={copy > 0 || undefined} key={`${copy}-${index}`}>{word}</span>))}</div></div></div><div className="rk-demo rk-arc-demo"><span className="rk-label">05 / Arc marquee</span><div className="rk-arc" data-rk-arc data-rk-arc-trigger>{["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT"].map((label, index) => <i data-rk-arc-item key={label} className={`rk-arc-item rk-arc-item--${index + 1}`}>{label}</i>)}</div></div></section>
 
         <section className="rk-section" id="rk-hover"><header><h2>Hover</h2><p>تعویض کاراکتری دو خط، فشردگی ۰٫۹۸ پس‌زمینه و لینک فلش‌دار با underline.</p></header><div className="rk-demo rk-hover-demo"><span className="rk-label">06–08 / Hover family</span><button className="rk-split-button" type="button"><span className="rk-split-button__bg" /><span className="rk-split-lines"><span>{getChars("Start a project")}</span><span aria-hidden="true">{getChars("Start a project")}</span></span></button><button className="rk-text-swap" type="button"><span>{getChars("Let's work together")}</span><span aria-hidden="true">{getChars("Let's work together")}</span></button><button className="rk-arrow-link" type="button" onClick={() => onNavigate("rk-works")}>View selected work <ArrowUpLeft size={20} /></button></div></section>
 

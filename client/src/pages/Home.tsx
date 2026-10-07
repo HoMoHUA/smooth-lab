@@ -7,21 +7,34 @@ import ReferenceEffectsKit from "@/components/ReferenceEffectsKit";
 import ScrollReferenceModules from "@/components/ScrollReferenceModules";
 import DesignSystemLanding from "@/components/DesignSystemLanding";
 
-const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
-const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
-const MOTION_ORBIT = "/manus-storage/smooth-motion-orbit_8316edb1.png";
-const MARK = "/manus-storage/smooth-hero-mark_fccd07e6.png";
+const HERO_FIELD = "/images/hero-field.svg";
+const SCROLL_FLOW = "/images/scroll-flow.svg";
+const MOTION_ORBIT = "/images/motion-orbit.svg";
+const MARK = "/images/hero-mark.svg";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const formatFa = (value: number, fractionDigits = 0) => new Intl.NumberFormat("fa-IR", { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }).format(value);
 
+const DEFAULT_EASING = 0.085;
+
+/** Position of an element in the document, ignoring transforms (reveal offsets, parallax). */
+const documentTop = (element: HTMLElement) => {
+  let top = 0;
+  let node: HTMLElement | null = element;
+  while (node) {
+    top += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return top;
+};
+
+const maxScroll = () => Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+
 export default function Home() {
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const easingRef = useRef(0.085);
-  const visualScrollRef = useRef(0);
-  const [easing, setEasing] = useState(0.085);
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const easingRef = useRef(DEFAULT_EASING);
+  const scrollToRef = useRef<(top: number) => void>((top) => window.scrollTo({ top, behavior: "auto" }));
+  const [easing, setEasing] = useState(DEFAULT_EASING);
   const [smoothEnabled, setSmoothEnabled] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -30,25 +43,25 @@ export default function Home() {
   }, [easing]);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const content = contentRef.current;
-    const track = trackRef.current;
-    if (!wrapper || !content || !track) return;
+    const shell = shellRef.current;
+    if (!shell) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const touchDevice = window.matchMedia("(pointer: coarse)").matches;
     const shouldSmooth = smoothEnabled && !reducedMotion && !touchDevice;
-    let frame = 0;
+
+    // The page keeps its real native scroll position (so sticky, fixed, anchors, keyboard and the
+    // scrollbar all keep working); only the wheel is intercepted and eased towards its target.
     let current = window.scrollY;
     let target = window.scrollY;
+    let animating = false;
+    let frame = 0;
+    let lastTime = 0;
     let lastReported = -1;
-
-    const refreshHeight = () => {
-      track.style.height = shouldSmooth ? `${content.scrollHeight}px` : "0px";
-    };
+    let updateFrame = 0;
 
     const revealAndParallax = () => {
-      document.querySelectorAll<HTMLElement>(".reveal").forEach((section) => {
+      document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)").forEach((section) => {
         const bounds = section.getBoundingClientRect();
         if (bounds.top < window.innerHeight * 0.84) section.classList.add("is-visible");
       });
@@ -60,82 +73,117 @@ export default function Home() {
       });
     };
 
-    const reportProgress = (value: number) => {
-      const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      const next = Math.round((value / max) * 100);
-      if (Math.abs(next - lastReported) > 1) {
+    const reportProgress = () => {
+      const next = Math.round((window.scrollY / Math.max(maxScroll(), 1)) * 100);
+      if (next !== lastReported) {
         lastReported = next;
         setScrollProgress(next);
       }
     };
 
+    const update = () => {
+      updateFrame = 0;
+      revealAndParallax();
+      reportProgress();
+    };
+
+    const requestUpdate = () => {
+      if (!updateFrame) updateFrame = requestAnimationFrame(update);
+    };
+
+    const step = (time: number) => {
+      const delta = lastTime ? Math.min(time - lastTime, 64) : 16.7;
+      lastTime = time;
+      const diff = target - current;
+      if (Math.abs(diff) < 0.4) {
+        current = target;
+        window.scrollTo(0, current);
+        animating = false;
+        lastTime = 0;
+        return;
+      }
+      // Frame-rate independent exponential easing; `easing` is the per-frame factor at 60fps.
+      current += diff * (1 - Math.pow(1 - easingRef.current, delta / 16.7));
+      window.scrollTo(0, current);
+      frame = requestAnimationFrame(step);
+    };
+
+    const startLoop = () => {
+      if (animating) return;
+      animating = true;
+      lastTime = 0;
+      frame = requestAnimationFrame(step);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey || event.defaultPrevented) return;
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+      event.preventDefault();
+      target = clamp(target + event.deltaY * unit, 0, maxScroll());
+      startLoop();
+    };
+
     const onScroll = () => {
-      target = window.scrollY;
-      visualScrollRef.current = target;
-      if (!shouldSmooth) {
-        revealAndParallax();
-        reportProgress(target);
+      // A scroll position that we did not write (scrollbar drag, keyboard, anchor) wins over the eased target.
+      if (!animating || Math.abs(window.scrollY - current) > 2) {
+        cancelAnimationFrame(frame);
+        animating = false;
+        current = target = window.scrollY;
+      }
+      requestUpdate();
+    };
+
+    const onResize = () => {
+      target = clamp(target, 0, maxScroll());
+      requestUpdate();
+    };
+
+    scrollToRef.current = (top) => {
+      const destination = clamp(top, 0, maxScroll());
+      if (shouldSmooth) {
+        target = destination;
+        startLoop();
+      } else {
+        window.scrollTo({ top: destination, behavior: reducedMotion ? "auto" : "smooth" });
       }
     };
 
-    const observer = new ResizeObserver(refreshHeight);
-    observer.observe(content);
-    const mutationObserver = new MutationObserver(() => requestAnimationFrame(refreshHeight));
-    mutationObserver.observe(content, { childList: true, subtree: true });
-    refreshHeight();
-    const settleHeight = window.setTimeout(refreshHeight, 180);
-    revealAndParallax();
-    reportProgress(target);
-    window.addEventListener("resize", refreshHeight);
+    shell.dataset.smooth = shouldSmooth ? "true" : "false";
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    if (shouldSmooth) {
-      wrapper.dataset.smooth = "true";
-      const tick = () => {
-        current += (target - current) * easingRef.current;
-        if (Math.abs(target - current) < 0.1) current = target;
-        visualScrollRef.current = current;
-        content.style.transform = `translate3d(0, ${-current}px, 0)`;
-        revealAndParallax();
-        reportProgress(current);
-        frame = requestAnimationFrame(tick);
-      };
-      tick();
-    } else {
-      wrapper.dataset.smooth = "false";
-      content.style.transform = "translate3d(0, 0, 0)";
-    }
+    window.addEventListener("resize", onResize);
+    if (shouldSmooth) window.addEventListener("wheel", onWheel, { passive: false });
+    update();
 
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
-      mutationObserver.disconnect();
-      window.clearTimeout(settleHeight);
-      window.removeEventListener("resize", refreshHeight);
+      cancelAnimationFrame(updateFrame);
+      resizeObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
-      wrapper.dataset.smooth = "false";
-      content.style.transform = "translate3d(0, 0, 0)";
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("wheel", onWheel);
+      scrollToRef.current = (top) => window.scrollTo({ top, behavior: "auto" });
+      shell.dataset.smooth = "false";
     };
   }, [smoothEnabled]);
 
   const goTo = (id: string) => {
-    const target = document.getElementById(id);
-    if (!target) return;
-    const destination = target.getBoundingClientRect().top + visualScrollRef.current - 28;
-    window.scrollTo({ top: destination, behavior: smoothEnabled ? "auto" : "smooth" });
+    const element = document.getElementById(id);
+    if (!element) return;
+    scrollToRef.current(documentTop(element) - 28);
   };
 
   const resetLab = () => {
-    setEasing(0.085);
+    setEasing(DEFAULT_EASING);
     setSmoothEnabled(true);
-    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (
-    <div className="lab-shell">
-      <div className="scroll-track" ref={trackRef} aria-hidden="true" />
-      <div className="smooth-wrapper" ref={wrapperRef}>
-        <div className="smooth-content" ref={contentRef}>
+    <div className="lab-shell" ref={shellRef} data-smooth="true">
+      <div className="smooth-content">
           <section className="hero-section" id="top">
             <HeroField />
             <img className="hero-art" src={HERO_FIELD} alt="" aria-hidden="true" />
@@ -251,7 +299,6 @@ export default function Home() {
           </section>
 
           <footer>SMOOTH HERO LAB <span>•</span> آزمایش مستقل حرکت وب <span>•</span> 2026</footer>
-        </div>
       </div>
     </div>
   );

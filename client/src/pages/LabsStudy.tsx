@@ -31,10 +31,12 @@ export default function LabsStudy() {
   const [cardIndex, setCardIndex] = useState(0);
   const hero = heroExperiments[heroIndex];
 
+  // Re-armed after every change, so a manual selection always gets a full interval.
   useEffect(() => {
-    const timer = window.setInterval(() => setHeroIndex((index) => (index + 1) % heroExperiments.length), 5200);
-    return () => window.clearInterval(timer);
-  }, []);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => setHeroIndex((index) => (index + 1) % heroExperiments.length), 5200);
+    return () => window.clearTimeout(timer);
+  }, [heroIndex]);
 
   const changeHero = (direction: number) => setHeroIndex((index) => (index + direction + heroExperiments.length) % heroExperiments.length);
   const changeCard = (direction: number) => setCardIndex((index) => (index + direction + experiments.length) % experiments.length);
@@ -60,9 +62,11 @@ export default function LabsStudy() {
         <header className="fw-section-head"><p>FIELDWORKS / EXPERIMENTS</p><h2>Be first<br />to <em>explore.</em></h2><span>New tools are more useful when people can touch them early, question them, and help shape the next iteration.</span></header>
         <div className="fw-card-stage">{experiments.map((item, index) => {
           const position = (index - cardIndex + experiments.length) % experiments.length;
-          const isActive = position === 0;
-          const visible = position <= 2 || position === experiments.length - 1;
-          return <article key={item.name} className={`fw-experiment-card ${isActive ? "is-active" : ""} ${visible ? "is-visible" : ""}`} style={{ "--card-color": item.color, "--card-position": position } as React.CSSProperties}><div className={`fw-card-art fw-card-art--${item.shape}`}><i /><i /><i /></div><h3>{item.name}</h3><p>{item.description}</p><button type="button">Learn more <ArrowUpRight size={16} /></button></article>;
+          // Signed distance from the active card: -2, -1, 0, 1, 2 (previous cards sit on the left).
+          const offset = position > experiments.length / 2 ? position - experiments.length : position;
+          const isActive = offset === 0;
+          const visible = Math.abs(offset) === 1;
+          return <article key={item.name} className={`fw-experiment-card ${isActive ? "is-active" : ""} ${visible ? "is-visible" : ""}`} style={{ "--card-color": item.color, "--card-offset": offset } as React.CSSProperties}><div className={`fw-card-art fw-card-art--${item.shape}`}><i /><i /><i /></div><h3>{item.name}</h3><p>{item.description}</p><button type="button">Learn more <ArrowUpRight size={16} /></button></article>;
         })}</div>
         <div className="fw-card-controls"><button type="button" onClick={() => changeCard(-1)} aria-label="Previous card"><ChevronLeft /></button><span>{String(cardIndex + 1).padStart(2, "0")} / {String(experiments.length).padStart(2, "0")}</span><button type="button" onClick={() => changeCard(1)} aria-label="Next card"><ChevronRight /></button></div>
       </section>

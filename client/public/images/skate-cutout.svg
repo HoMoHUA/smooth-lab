@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+<ellipse cx="800" cy="676" rx="190" ry="14" fill="#000" fill-opacity=".0"/>
+<g transform="rotate(-9 800 430)" stroke-linecap="round" stroke-linejoin="round">
+  <!-- board -->
+  <g transform="rotate(-6 800 585)">
+    <rect x="660" y="572" width="280" height="22" rx="11" fill="#d7ff4f" stroke="#111521" stroke-width="4"/>
+    <circle cx="715" cy="612" r="13" fill="#111521"/><circle cx="885" cy="612" r="13" fill="#111521"/>
+  </g>
+  <!-- legs -->
+  <path d="M782 440 L735 500 L722 570" fill="none" stroke="#1a2a63" stroke-width="30"/>
+  <path d="M822 440 L872 488 L880 572" fill="none" stroke="#1a2a63" stroke-width="30"/>
+  <path d="M706 578 H742" stroke="#111521" stroke-width="20"/><path d="M866 580 H904" stroke="#111521" stroke-width="20"/>
+  <!-- torso -->
+  <path d="M802 440 L812 345" fill="none" stroke="#315cff" stroke-width="72"/>
+  <!-- arms -->
+  <path d="M790 350 L705 345 L640 305" fill="none" stroke="#315cff" stroke-width="26"/>
+  <path d="M835 350 L915 322 L972 262" fill="none" stroke="#315cff" stroke-width="26"/>
+  <circle cx="634" cy="300" r="15" fill="#f2b48c"/><circle cx="978" cy="256" r="15" fill="#f2b48c"/>
+  <!-- head + helmet -->
+  <circle cx="818" cy="282" r="36" fill="#f2b48c"/>
+  <path d="M780 280 A38 38 0 0 1 856 276 L856 268 H782 Z" fill="#d7ff4f" stroke="#111521" stroke-width="4"/>
+</g>
+</svg>

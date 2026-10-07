@@ -6,8 +6,8 @@ export const designTokens = {
     { name: "Paper", value: "#F7F7F3", usage: "پس‌زمینهٔ پایه و فضای تنفس" },
   ],
   type: [
-    { name: "Display", value: "clamp(3.45rem, 8.3vw, 8.5rem)", usage: "Hero و پیام‌های کلیدی" },
-    { name: "Section", value: "clamp(2.55rem, 5.1vw, 5.5rem)", usage: "تیتر بخش‌ها" },
+    { name: "Display", value: "clamp(3rem, 6.8vw, 7.4rem)", usage: "Hero و پیام‌های کلیدی" },
+    { name: "Section", value: "clamp(2.5rem, 5vw, 5.5rem)", usage: "تیتر بخش‌ها" },
     { name: "Body", value: "1rem / 2", usage: "بدنه و توضیحات" },
     { name: "Meta", value: "0.68rem", usage: "برچسب‌ها و دادهٔ فنی" },
   ],

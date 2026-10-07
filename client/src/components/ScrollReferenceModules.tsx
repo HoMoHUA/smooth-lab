@@ -56,8 +56,8 @@ export default function ScrollReferenceModules() {
         <div className="pop-reference__heading"><p>افکت افزودهٔ ۰۲ / Pop-out Image</p><h2>تصویر درون قاب می‌ماند؛ سوژه از قاب خارج می‌شود.</h2><button type="button" onClick={() => setExploded((value) => !value)}><MousePointer2 size={17} /> {exploded ? "بازگشت لایه‌ها" : "حالت Explode"}</button></div>
         <div className="pop-reference__scene">
           <div className="pop-reference__image">
-            <figure><img src="/manus-storage/skate-action_4a036faa.jpg" alt="اسکیت‌بردباز در حال پرش" /></figure>
-            <figure aria-hidden="true"><img src="/manus-storage/skate-cutout_4b9fa6c1.png" alt="" /></figure>
+            <figure><img src="/images/skate-action.svg" alt="اسکیت‌بردباز در حال پرش" /></figure>
+            <figure aria-hidden="true"><img src="/images/skate-cutout.svg" alt="" /></figure>
           </div>
           <div className="pop-reference__caption"><span>Scroll-linked layers</span><strong>EXTREME</strong></div>
         </div>
