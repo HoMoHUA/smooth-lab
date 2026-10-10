@@ -7,11 +7,12 @@ import ReferenceEffectsKit from "@/components/ReferenceEffectsKit";
 import ScrollReferenceModules from "@/components/ScrollReferenceModules";
 import DesignSystemLanding from "@/components/DesignSystemLanding";
 import LabsMotionShowcase from "@/components/LabsMotionShowcase";
+import { visualScrollY } from "@/motion/visualScroll";
 
-const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
-const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
-const MOTION_ORBIT = "/manus-storage/smooth-motion-orbit_8316edb1.png";
-const MARK = "/manus-storage/smooth-hero-mark_fccd07e6.png";
+const HERO_FIELD = "/images/hero-field.svg";
+const SCROLL_FLOW = "/images/scroll-flow.webp";
+const MOTION_ORBIT = "/images/motion-orbit.webp";
+const MARK = "/images/mark.svg";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const formatFa = (value: number, fractionDigits = 0) => new Intl.NumberFormat("fa-IR", { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }).format(value);
@@ -73,6 +74,7 @@ export default function Home() {
     const onScroll = () => {
       target = window.scrollY;
       visualScrollRef.current = target;
+      if (!shouldSmooth) visualScrollY.set(target);
       if (!shouldSmooth) {
         revealAndParallax();
         reportProgress(target);
@@ -99,6 +101,7 @@ export default function Home() {
         // Lets the extension runtime follow the visual (transformed) scroll position.
         if (current !== previous) window.dispatchEvent(new Event("sl:scroll"));
         visualScrollRef.current = current;
+        visualScrollY.set(current);
         content.style.transform = `translate3d(0, ${-current}px, 0)`;
         revealAndParallax();
         reportProgress(current);

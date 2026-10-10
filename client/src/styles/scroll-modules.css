@@ -1,0 +1,82 @@
+/* Scroll scenes — Sticky Bento and Pop-out Image (motion lives in framer-motion). */
+.sm { font-family: Vazirmatn, system-ui, sans-serif; }
+.sm h2, .sm p { margin: 0; }
+
+/* sticky bento: a tall track; the stage is pinned by translating it with the scroll offset */
+.sm-bento { position: relative; height: 320vh; background: linear-gradient(180deg, #f1e9ff, #ffe7f1 55%, #eef3ff); overflow: clip; }
+.sm-bento__stage { position: relative; display: grid; grid-template-rows: auto 1fr auto; height: 100vh; padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 5vw, 4rem); will-change: transform; }
+.sm-bento__head { display: grid; gap: 0.75rem; max-width: 36rem; }
+.sm-bento__head p, .sm-pop__head p { color: #6b6380; font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; letter-spacing: 0.05em; }
+.sm-bento__head h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); line-height: 1.3; }
+.sm-bento__scene { position: relative; display: grid; place-items: center; min-height: 0; }
+.sm-bento__bar { height: 3px; border-radius: 3px; background: rgb(17 21 33 / 0.1); overflow: hidden; }
+.sm-bento__bar i { display: block; height: 100%; background: #315cff; }
+
+.sm-phone {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: clamp(12rem, 22vw, 16rem);
+  aspect-ratio: 9 / 18.5;
+  padding: 0.9rem;
+  border: 6px solid #111521;
+  border-radius: 2.4rem;
+  background: linear-gradient(180deg, #fff, #f3f4ff);
+  box-shadow: 0 40px 80px -30px rgb(49 92 255 / 0.55);
+}
+.sm-phone__status { display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; font-weight: 600; }
+.sm-phone__status span:last-child { display: inline-flex; gap: 0.25rem; align-items: center; }
+.sm-phone__chat { display: grid; align-content: end; gap: 0.5rem; padding-bottom: 0.75rem; }
+.sm-phone__chat p { justify-self: start; max-width: 85%; padding: 0.55rem 0.75rem; border-radius: 1rem 1rem 1rem 0.3rem; background: #e8ecff; font-size: 0.72rem; line-height: 1.7; }
+.sm-phone__chat p.is-me { justify-self: end; border-radius: 1rem 1rem 0.3rem 1rem; background: #315cff; color: #fff; }
+.sm-phone__input { display: flex; gap: 0.4rem; align-items: center; padding: 0.55rem 0.75rem; border-radius: 999px; background: #fff; color: #9aa0b4; font-size: 0.7rem; box-shadow: 0 0 0 1px rgb(17 21 33 / 0.08); }
+
+.sm-note { position: absolute; z-index: 3; display: flex; gap: 0.75rem; align-items: flex-start; max-width: 17rem; padding: 1rem 1.1rem; border-radius: 1.25rem; background: rgb(255 255 255 / 0.85); backdrop-filter: blur(12px); box-shadow: 0 18px 40px -20px rgb(17 21 33 / 0.35); font-size: 0.82rem; line-height: 1.9; }
+.sm-note span { display: grid; place-items: center; flex: none; width: 2.2rem; aspect-ratio: 1; border-radius: 0.75rem; background: #d7ff4f; }
+.sm-note--one { top: 14%; inset-inline-start: 4%; }
+.sm-note--two { bottom: 14%; inset-inline-end: 4%; }
+
+.sm-tile { position: absolute; z-index: 1; display: grid; place-items: end start; width: clamp(8rem, 15vw, 12rem); aspect-ratio: 1.15; padding: 1rem; border-radius: 1.5rem; color: #111521; font-weight: 700; box-shadow: 0 24px 50px -28px rgb(17 21 33 / 0.5); }
+.sm-tile--0 { background: #4af08a; }
+.sm-tile--1 { background: #ffbdf7; }
+.sm-tile--2 { background: #5b9cff; color: #fff; }
+.sm-tile--3 { background: #fcc934; }
+
+/* pop-out image: scene, caption and subject share one box; the subject is not clipped */
+.sm-pop { padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 5vw, 4rem); background: #0b0d14; color: #fff; overflow: clip; }
+.sm-pop__head { display: grid; justify-items: start; gap: 1rem; max-width: 40rem; margin-bottom: clamp(3rem, 8vw, 6rem); }
+.sm-pop__head p { color: rgb(255 255 255 / 0.55); }
+.sm-pop__head h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); line-height: 1.3; }
+.sm-pop__head button { display: inline-flex; gap: 0.5rem; align-items: center; padding: 0.65rem 1.1rem; border: 1px solid rgb(255 255 255 / 0.25); border-radius: 999px; background: transparent; color: #fff; }
+.sm-pop__stage { position: relative; width: min(66rem, 100%); aspect-ratio: 3 / 2; margin: 0 auto; perspective: 1400px; transform-style: preserve-3d; }
+.sm-pop__frame, .sm-pop__subject { position: absolute; inset: 0; margin: 0; }
+.sm-pop__frame { overflow: hidden; border-radius: clamp(1rem, 2.5vw, 2rem); background: #1b2236; box-shadow: 0 50px 120px -40px rgb(49 92 255 / 0.45); }
+.sm-pop__frame img, .sm-pop__subject img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sm-pop__subject { z-index: 3; pointer-events: none; }
+.sm-pop__subject img { filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.45)); }
+.sm-pop__caption {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 6% 0;
+  margin: 0;
+  color: #fff;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(5rem, 22vw, 18rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  text-align: center;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.sm-pop[data-exploded] .sm-pop__caption { mix-blend-mode: normal; }
+.sm-pop__credit { margin-top: 2rem !important; color: rgb(255 255 255 / 0.4); font-size: 0.72rem; text-align: center; }
+
+@media (max-width: 760px) {
+  .sm-bento { height: 280vh; }
+  .sm-note { max-width: 12.5rem; font-size: 0.72rem; }
+  .sm-note--one { top: 4%; }
+  .sm-note--two { bottom: 4%; }
+  .sm-tile { width: 6.5rem; }
+}

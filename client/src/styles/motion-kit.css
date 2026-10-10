@@ -1,0 +1,168 @@
+/* Motion Kit — layout for the framer-motion effect library (components bring their own motion). */
+.mk {
+  --mk-ink: #111521;
+  --mk-paper: #f4f4ef;
+  --mk-line: rgb(17 21 33 / 0.1);
+  --mk-muted: #656b7b;
+  position: relative;
+  background: var(--mk-paper);
+  color: var(--mk-ink);
+  font-family: Vazirmatn, system-ui, sans-serif;
+}
+.mk h2, .mk h3, .mk p { margin: 0; }
+/* Grid items default to min-width: auto; the sliders' long tracks would otherwise widen every column. */
+.mk-shell > *, .mk-section > *, .mk-hero__copy > * { min-width: 0; }
+.mk-slider, .mk-velocity { overflow: hidden; max-width: 100%; }
+/* Animated Background wraps each child's content in a .z-10 div; give it a stacking context above the sliding layer. */
+.mk [data-checked] > .z-10 { position: relative; }
+
+/* hero */
+.mk-hero {
+  position: relative;
+  display: grid;
+  min-height: 92svh;
+  padding: 1.5rem clamp(1rem, 5vw, 4rem) 6rem;
+  overflow: hidden;
+  background:
+    radial-gradient(40rem 26rem at 85% 20%, rgb(215 255 79 / 0.45), transparent 70%),
+    radial-gradient(42rem 30rem at 10% 80%, rgb(49 92 255 / 0.22), transparent 70%),
+    var(--mk-paper);
+}
+.mk-spotlight { background: radial-gradient(circle, rgb(49 92 255 / 0.28), rgb(49 92 255 / 0.08) 45%, transparent 70%) !important; filter: blur(18px); }
+.mk-hero__nav { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+.mk-hero__nav strong { font-family: "IBM Plex Mono", monospace; letter-spacing: 0.04em; }
+.mk-hero__nav button { padding: 0.5rem 1rem; border: 1px solid var(--mk-line); border-radius: 999px; background: rgb(255 255 255 / 0.6); }
+.mk-hero__copy { align-self: center; display: grid; justify-items: center; gap: 1.5rem; text-align: center; }
+.mk-hero__kicker { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; letter-spacing: 0.06em; --base-color: #656b7b; --base-gradient-color: #315cff; }
+.mk-hero__title { font-family: Inter, "Helvetica Neue", Arial, sans-serif; font-size: clamp(3.4rem, 12vw, 11rem); font-weight: 700; line-height: 0.9; letter-spacing: -0.065em; }
+.mk-hero__lead { max-width: 40rem; color: var(--mk-muted); font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 2; }
+.mk-trail-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.7rem;
+  overflow: hidden;
+  border: 1px solid var(--mk-line);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 600;
+}
+.mk-trail { background: linear-gradient(90deg, #315cff, #d7ff4f); }
+.mk-hero__blur { position: absolute !important; inset: auto 0 0 0; height: 8rem; pointer-events: none; }
+
+/* shell & sections */
+.mk-shell { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1rem, 3vw, 2rem); padding: 0 clamp(1rem, 4vw, 3rem) clamp(4rem, 8vw, 6rem); }
+.mk-section, .mk-index {
+  padding: clamp(2rem, 5vw, 4rem);
+  border: 1px solid var(--mk-line);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background: #fff;
+}
+.mk-section--dark { border-color: transparent; background: var(--mk-ink); color: #fff; }
+.mk-section__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); align-items: end; gap: 1.5rem 3rem; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+.mk-section__head p { color: var(--mk-muted); font-size: 0.9rem; line-height: 2; }
+.mk-section--dark .mk-section__head p { color: rgb(255 255 255 / 0.6); }
+.mk-section__title { font-size: clamp(2rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+
+/* index */
+.mk-index .mk-section__title { margin-bottom: 2rem; }
+.mk-index__grid { display: flex; flex-wrap: wrap; gap: 0.4rem; direction: ltr; }
+.mk-index__highlight { border-radius: 999px; background: var(--mk-ink); }
+.mk-index__item { padding: 0.6rem 1rem; border: 1px solid var(--mk-line); border-radius: 999px; background: transparent; font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; transition: color 0.25s; }
+.mk-index__item[data-checked="true"] { color: #fff; }
+
+/* entrance */
+.mk-entrance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.mk-tile { display: grid; gap: 0.6rem; padding: 1.5rem; border-radius: 1.25rem; background: var(--mk-paper); }
+.mk-tile span { display: grid; place-items: center; width: 2.75rem; aspect-ratio: 1; border-radius: 0.9rem; background: #315cff; color: #fff; }
+.mk-tile:nth-child(3n + 2) span { background: #d7ff4f; color: var(--mk-ink); }
+.mk-tile:nth-child(3n) span { background: var(--mk-ink); }
+.mk-tile h3 { margin-top: 0.6rem; font-size: 1.1rem; }
+.mk-tile p { color: var(--mk-muted); font-size: 0.86rem; line-height: 1.9; }
+
+/* scroll reveal */
+.mk-reveal { max-width: 22ch; font-size: clamp(2rem, 5vw, 4.4rem); font-weight: 700; line-height: 1.45; letter-spacing: -0.02em; }
+.mk-reveal__word { display: inline-block; white-space: pre; }
+
+/* marker */
+.mk-marker { max-width: 24ch; font-size: clamp(1.9rem, 4.4vw, 3.8rem); font-weight: 700; line-height: 1.75; }
+
+/* marquee */
+.mk-slider { position: relative; padding: 1.25rem 0; border-block: 1px solid var(--mk-line); }
+.mk-slider__item { font-family: Inter, Arial, sans-serif; font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 600; letter-spacing: -0.03em; white-space: nowrap; }
+.mk-slider__edge { position: absolute !important; top: 0; height: 100%; width: clamp(4rem, 12vw, 9rem); }
+.mk-slider__edge--left { left: 0; }
+.mk-slider__edge--right { right: 0; }
+.mk-velocity { margin-top: 2rem; overflow: hidden; font-family: Inter, Arial, sans-serif; font-size: clamp(3rem, 9vw, 7.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.05em; }
+.mk-velocity__outline { color: transparent; -webkit-text-stroke: 1.5px var(--mk-ink); }
+
+/* hover */
+.mk-hover { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+/* Magic Card reads Tailwind theme colors; give it this section's surface and border. */
+.mk-magic { --color-background: var(--mk-paper); --color-border: var(--mk-line); min-height: 15rem; border-radius: 1.25rem; }
+.mk-magic .bg-background { background: var(--color-background); }
+.mk-magic__body, .mk-beam-card { display: grid; align-content: end; gap: 0.6rem; height: 100%; min-height: 15rem; padding: 1.5rem; }
+.mk-magic__body h3, .mk-beam-card h3 { font-size: 1.2rem; }
+.mk-magic__body p, .mk-beam-card p { color: var(--mk-muted); font-size: 0.86rem; line-height: 1.9; }
+.mk-beam-card { position: relative; overflow: hidden; border: 1px solid var(--mk-line); border-radius: 1.25rem; background: var(--mk-paper); }
+.mk-hover__actions { display: grid; align-content: center; justify-items: center; gap: 1.5rem; border-radius: 1.25rem; background: var(--mk-paper); padding: 1.5rem; }
+.mk-roll { padding: 1rem 1.8rem; border: 0; border-radius: 999px; background: var(--mk-ink); color: #fff; font-family: Inter, Arial, sans-serif; font-weight: 600; }
+.mk-scramble { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--mk-ink); font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 0.2rem; }
+
+/* awards */
+.mk-awards { display: grid; }
+.mk-awards__bg { border-radius: 1rem; background: var(--mk-ink); }
+.mk-awards__row {
+  display: flex !important;
+  width: 100%;
+  border-bottom: 1px solid var(--mk-line);
+  cursor: pointer;
+}
+.mk-awards__row > .z-10 {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.25rem;
+  transition: color 0.25s;
+}
+.mk-awards__row .z-10 > span { color: var(--mk-muted); font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
+.mk-awards__row strong { font-size: clamp(1.1rem, 2.2vw, 1.6rem); }
+.mk-awards__row small { color: var(--mk-muted); }
+.mk-awards__row[data-checked="true"], .mk-awards__row[data-checked="true"] span, .mk-awards__row[data-checked="true"] small { color: #fff; }
+
+/* numbers */
+.mk-numbers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; overflow: hidden; border-radius: 1.25rem; background: var(--mk-line); }
+.mk-number { display: grid; gap: 0.4rem; padding: 1.75rem 1.5rem; background: #fff; }
+.mk-number--live { background: #315cff; color: #fff; }
+.mk-number__value { color: inherit !important; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.mk-number span:last-child { color: var(--mk-muted); font-size: 0.85rem; }
+.mk-number--live span:last-child { color: rgb(255 255 255 / 0.75); }
+
+/* beam */
+.mk-beam { position: relative; display: flex; align-items: center; justify-content: space-between; max-width: 46rem; min-height: 22rem; margin: 0 auto; padding: 1rem clamp(0.5rem, 4vw, 3rem); }
+.mk-beam__col { display: grid; gap: 2.5rem; }
+.mk-node { position: relative; z-index: 2; display: grid; place-items: center; width: 3.5rem; aspect-ratio: 1; border-radius: 50%; background: #fff; color: var(--mk-ink); box-shadow: 0 0 24px -8px rgb(215 255 79 / 0.8); }
+.mk-node--hub { width: 5.5rem; background: #d7ff4f; }
+
+/* footer */
+.mk-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 2rem; padding: clamp(3rem, 7vw, 6rem) clamp(1rem, 5vw, 4rem); background: var(--mk-ink); color: #fff; }
+.mk-footer__title { max-width: 14ch; font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 700; line-height: 1.2; }
+.mk-footer button { display: inline-flex; gap: 0.5rem; align-items: center; padding: 0.8rem 1.4rem; border: 1px solid rgb(255 255 255 / 0.3); border-radius: 999px; background: transparent; color: #fff; }
+
+@media (max-width: 900px) {
+  .mk-section__head { grid-template-columns: 1fr; }
+  .mk-entrance, .mk-hover { grid-template-columns: 1fr 1fr; }
+  .mk-hover__actions { grid-column: 1 / -1; }
+  .mk-numbers { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .mk-entrance, .mk-hover { grid-template-columns: 1fr; }
+  .mk-awards__row > .z-10 { grid-template-columns: 3rem 1fr auto; }
+  .mk-awards__row small { display: none; }
+  .mk-beam__col { gap: 1.5rem; }
+  .mk-node { width: 2.8rem; }
+  .mk-node--hub { width: 4.2rem; }
+}

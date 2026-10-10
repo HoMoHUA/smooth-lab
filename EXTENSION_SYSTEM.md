@@ -142,12 +142,41 @@ return <section ref={ref}><p data-sl-word-scrub>…</p></section>;
 - **ترتیب لایه‌ها:** اگر CSS اکستنشن قبل از reset سایت بارگذاری شود، reset (مثل preflight در Tailwind) دکمه‌های تولیدی اکستنشن را می‌پوشاند. در سایت میزبان ترتیب را صریح اعلام کنید: `@layer theme, base, components, smooth-lab, utilities;` (نمونه در `client/src/index.css`).
 - **اسکرول نرم:** کتابخانه‌هایی که محتوا را با transform جابه‌جا می‌کنند (Lenis یا اسکرول نرم همین سایت) باید در هر فریم `window.dispatchEvent(new Event("sl:scroll"))` بفرستند تا افکت‌های وابسته به اسکرول هم‌گام بمانند.
 
-## ۷. نقشهٔ ادامهٔ مهاجرت
+## ۷. فاز ۳ — تصاویر جدید و بازسازی با Framer Motion و 21st.dev
+
+**تصاویر:** همهٔ مسیرهای شکستهٔ `/manus-storage` جایگزین شدند. فایل‌ها در `client/public/images/` هستند و منبع هر کدام در `CREDITS.md` آمده است.
+
+| جایگاه | تصویر جدید |
+|---|---|
+| Hero | `hero-field.svg`: میدان خطوط و ذرات، طراحی‌شده برای همین پروژه |
+| لوگو | `mark.svg` |
+| فیزیک پیمایش | `scroll-flow.webp`: رد نور خودروها (Unsplash) |
+| میدان تعاملی | `motion-orbit.webp`: نقاشی نوری دایره‌ای (Unsplash) |
+| Pop-out Image | `popout-scene.webp` و `popout-subject.webp`: کرکس در حال فرود (Unsplash) که پس‌زمینه‌اش با rembg جدا شده |
+
+**Effects Kit** از نو با Framer Motion و کامپوننت‌های Motion Primitives و Magic UI ساخته شد؛ همان کامپوننت‌هایی که در 21st.dev منتشر شده‌اند. چون registry سایت 21st.dev کلید API می‌خواهد، کد MIT از مخزن اصلی هر کتابخانه برداشته شد (`client/src/components/motion/README.md`).
+
+| بخش | کامپوننت‌ها |
+|---|---|
+| Hero | Text Effect، Text Shimmer، Border Trail، Spotlight، Progressive Blur |
+| فهرست الگوها | Animated Background |
+| ورود گروهی | Animated Group |
+| روشن‌شدن کلمه‌به‌کلمه | الگوی Text Reveal (Magic UI) روی اسکرول بصری |
+| هایلایتر | Highlighter (rough-notation) |
+| نوارها | Infinite Slider + Progressive Blur، Scroll Velocity |
+| اشاره‌گر | Magic Card، Border Beam، Text Roll، Text Scramble |
+| فهرست جوایز | Animated Background (hover) |
+| عددها | Number Ticker، Animated Number |
+| اتصال | Animated Beam |
+| Sticky Bento و Pop-out | `useTransform` و `useSpring` در Framer Motion |
+
+`MotionConfig reducedMotion="user"` در `App.tsx` باعث می‌شود همهٔ کامپوننت‌های Framer تنظیم «کاهش حرکت» سیستم را رعایت کنند.
+
+## ۸. نقشهٔ ادامهٔ مهاجرت
 
 | فاز | کار |
 |---|---|
-| ۳ — افکت‌های باقی‌ماندهٔ Effects Kit | Split button / text swap، Awards hover، Arc marquee، Hero parallax، Progressive blur، Statement pill |
-| ۴ — صحنه‌های اسکرول | Sticky Bento، Pop-out Image (تصویر به‌جای مسیر `/manus-storage` از attribute گرفته شود)، Mind-map branching از NotebookLM |
+| ۴ — صحنه‌های اسکرول | نسخهٔ اکستنشنی (بدون React) از Sticky Bento و Pop-out، Mind-map branching از NotebookLM |
 | ۵ — ماژول‌های بزرگ | HeroField (canvas ذرات، رنگ از `--sl-color-accent`)، Smooth scroll به‌صورت اکستنشن اختیاری روی کل سند، carousel نمونهٔ Fieldworks |
 | ۶ — پاک‌سازی سایت دمو | سایت فعلی خودش با `adapters/nextpixel.css` مصرف‌کنندهٔ اکستنشن‌ها شود؛ حذف کامپوننت‌های مرده، `clamp`‌های تکراری و `rk-*`/`--rk-*` پس از انتقال هر افکت |
 | ۷ — انتشار | تبدیل `extensions/` به بستهٔ npm مستقل با `exports` برای `.`، `./react`، `./smooth-lab.css` و `./adapters/*` |
