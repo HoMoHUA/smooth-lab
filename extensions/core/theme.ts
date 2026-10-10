@@ -16,6 +16,11 @@ export type TokenName =
   | "color-text-inverse"
   | "color-text-muted"
   | "color-border"
+  | "color-shape-1"
+  | "color-shape-2"
+  | "color-shape-3"
+  | "color-shape-4"
+  | "color-shape-5"
   | "gradient-accent"
   | "font-body"
   | "font-mono"
@@ -31,7 +36,8 @@ export type TokenName =
   | "ease-standard"
   | "duration-enter"
   | "duration-hover"
-  | "reveal-distance";
+  | "reveal-distance"
+  | "ease-spring";
 
 export type ThemeMap = Partial<Record<TokenName, string>>;
 

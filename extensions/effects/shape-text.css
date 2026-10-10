@@ -1,0 +1,8 @@
+@layer smooth-lab.effects {
+  [data-sl-tint-layer] {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    clip-path: inset(100%);
+  }
+}

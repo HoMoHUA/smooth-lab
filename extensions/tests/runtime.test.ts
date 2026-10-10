@@ -120,3 +120,71 @@ describe("connectTheme", () => {
     expect(root.style.getPropertyValue("--sl-radius-md")).toBe("");
   });
 });
+
+describe("Labs extensions", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {}
+        disconnect() {}
+      },
+    );
+  });
+
+  it("rise splits words behind masks, keeps inline markup, and restores on destroy", () => {
+    const lab = start(`<h2 data-sl-rise id="h">Understand <em>anything</em></h2>`);
+    const heading = document.getElementById("h")!;
+    expect(Array.from(heading.querySelectorAll("[data-sl-rise-word]"), (word) => word.textContent)).toEqual(["Understand", "anything"]);
+    expect(heading.querySelector("em [data-sl-rise-word]")).not.toBeNull();
+    expect(heading.getAttribute("aria-label")).toBe("Understand anything");
+    expect(heading.getAttribute("data-sl-state")).toBe("hidden");
+    enterViewport(heading);
+    expect(heading.getAttribute("data-sl-state")).toBe("visible");
+    lab.destroy();
+    instance = undefined;
+    expect(heading.innerHTML).toBe("Understand <em>anything</em>");
+  });
+
+  it("shape-text adds one tinted copy per tint shape without nesting copies", () => {
+    start(`<div data-sl-shapes><i data-sl-shape="circle" data-sl-tint="red"></i><i data-sl-shape="hexagon" data-sl-tint="blue"></i><h2 data-sl-shape-text id="t">Hello</h2></div>`);
+    const layers = document.querySelectorAll("#t > [data-sl-tint-layer]");
+    expect(layers).toHaveLength(2);
+    layers.forEach((layer) => expect(layer.innerHTML).toBe("Hello"));
+    expect((layers[1] as HTMLElement).style.color).toBe("blue");
+  });
+
+  it("carousel builds accessible controls and moves between slides", () => {
+    start(`<div data-sl-carousel id="c"><article>A</article><article>B</article><article>C</article></div>`);
+    const slides = document.querySelectorAll("#c > article");
+    const active = () => Array.from(slides).findIndex((slide) => slide.getAttribute("data-sl-carousel-slide") === "active");
+    expect(document.querySelectorAll("[data-sl-carousel-pill]")).toHaveLength(3);
+    expect(active()).toBe(0);
+    expect(slides[1].hasAttribute("inert")).toBe(true);
+    (document.querySelector('[data-sl-carousel-step="previous"]') as HTMLButtonElement).click();
+    expect(active()).toBe(2);
+    (document.querySelectorAll("[data-sl-carousel-pill]")[1] as HTMLButtonElement).click();
+    expect(active()).toBe(1);
+    expect(document.querySelectorAll("[data-sl-carousel-pill]")[1].getAttribute("aria-current")).toBe("true");
+  });
+
+  it("pile keeps children hidden until it enters, then shows them; reduced motion shows at once", () => {
+    start(`<div data-sl-pile id="p"><i></i><i></i></div>`);
+    const pile = document.getElementById("p")!;
+    expect(pile.getAttribute("data-sl-state")).toBe("hidden");
+    enterViewport(pile);
+    expect(pile.getAttribute("data-sl-state")).toBe("visible");
+    instance?.destroy();
+    reduced = true;
+    start(`<div data-sl-pile id="q"><i></i></div>`);
+    expect(document.getElementById("q")!.getAttribute("data-sl-state")).toBe("visible");
+  });
+
+  it("fan gives every card an offset and a stacking order", () => {
+    start(`<div data-sl-fan><article></article><article></article><article></article></div>`);
+    document.querySelectorAll("[data-sl-fan] > article").forEach((card) => {
+      expect((card as HTMLElement).style.getPropertyValue("--sl-fan-o")).not.toBe("");
+      expect((card as HTMLElement).style.zIndex).not.toBe("");
+    });
+  });
+});

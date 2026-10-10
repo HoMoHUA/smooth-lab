@@ -1,0 +1,8 @@
+@layer smooth-lab.effects {
+  [data-sl-pile][data-sl-state="hidden"] > * {
+    visibility: hidden;
+  }
+  [data-sl-pile] > * {
+    rotate: var(--sl-rotate, 0deg);
+  }
+}

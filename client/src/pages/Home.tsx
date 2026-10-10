@@ -6,6 +6,7 @@ import HeroField from "@/components/HeroField";
 import ReferenceEffectsKit from "@/components/ReferenceEffectsKit";
 import ScrollReferenceModules from "@/components/ScrollReferenceModules";
 import DesignSystemLanding from "@/components/DesignSystemLanding";
+import LabsMotionShowcase from "@/components/LabsMotionShowcase";
 
 const HERO_FIELD = "/manus-storage/smooth-hero-field_d446afec.png";
 const SCROLL_FLOW = "/manus-storage/smooth-scroll-flow_bf4d4b9e.png";
@@ -92,8 +93,11 @@ export default function Home() {
     if (shouldSmooth) {
       wrapper.dataset.smooth = "true";
       const tick = () => {
+        const previous = current;
         current += (target - current) * easingRef.current;
         if (Math.abs(target - current) < 0.1) current = target;
+        // Lets the extension runtime follow the visual (transformed) scroll position.
+        if (current !== previous) window.dispatchEvent(new Event("sl:scroll"));
         visualScrollRef.current = current;
         content.style.transform = `translate3d(0, ${-current}px, 0)`;
         revealAndParallax();
@@ -241,6 +245,7 @@ export default function Home() {
           </section>
 
           <ReferenceEffectsKit onNavigate={goTo} />
+          <LabsMotionShowcase />
           <ScrollReferenceModules />
 
           <section className="closing-section reveal">

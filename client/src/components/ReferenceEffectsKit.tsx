@@ -1,34 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUpLeft, Plus } from "lucide-react";
+import { ArrowDown, ArrowUpLeft } from "lucide-react";
 
 type ReferenceEffectsKitProps = {
   onNavigate: (id: string) => void;
 };
 
 const words = "Good motion turns a static message into a guided visual experience.".split(" ");
-const workCards = [
-  ["Horizon", "#657cff", "#17266f"],
-  ["Vertex", "#ff6f71", "#6f1726"],
-  ["Aurelius", "#63c5a6", "#125446"],
-];
-const sliderItems = [
-  ["Strategy before decoration.", "#d7ff45"],
-  ["Systems that keep moving.", "#82b9ff"],
-  ["Motion with a reason.", "#ff9e75"],
-];
 
 const clamp = (min: number, value: number, max: number) => Math.min(max, Math.max(min, value));
-const formatCounter = (value: number, digits = 0) => new Intl.NumberFormat("fa-IR", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
 
 export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitProps) {
   const rootRef = useRef<HTMLElement | null>(null);
-  const cursorZoneRef = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [slide, setSlide] = useState(0);
-  const [counts, setCounts] = useState([0, 0, 0]);
-  const [cursor, setCursor] = useState({ x: 0, y: 0, active: false });
-  const [cursorText, setCursorText] = useState("View Work");
 
   useEffect(() => {
     const root = rootRef.current;
@@ -43,11 +26,6 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setSlide((active) => (active + 1) % sliderItems.length), 4000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const observer = new IntersectionObserver((entries) => {
@@ -58,30 +36,6 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
     root.querySelectorAll<HTMLElement>("[data-rk-enter],[data-rk-marker],[data-rk-arc-trigger],[data-rk-statement]").forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const countTarget = root.querySelector<HTMLElement>("[data-rk-counts]");
-    if (!countTarget) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      const targets = [72, 98, 8.2];
-      const start = performance.now();
-      let frame = 0;
-      const tick = (now: number) => {
-        const progress = clamp(0, (now - start) / 2800, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setCounts(targets.map((target) => target * eased));
-        if (progress < 1) frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
-      observer.disconnect();
-      return () => cancelAnimationFrame(frame);
-    }, { threshold: 0.45 });
-    observer.observe(countTarget);
     return () => observer.disconnect();
   }, []);
 
@@ -122,14 +76,6 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
         const progress = clamp(0, -rect.top / Math.max(window.innerHeight, 1), 1);
         hero.style.transform = `translateY(${progress * 10}vh) scale(${1 - progress * 0.02})`;
       }
-      root.querySelectorAll<HTMLElement>("[data-rk-work]").forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const incoming = clamp(0, (window.innerHeight - rect.top) / (window.innerHeight * 0.72), 1);
-        const recede = clamp(0, (window.innerHeight * 0.1 - rect.top) / (window.innerHeight * 0.65), 1);
-        card.style.setProperty("--rk-in", String(incoming));
-        card.style.setProperty("--rk-recede", String(recede));
-        card.style.setProperty("--rk-image-y", String(recede * 8 - (1 - incoming) * 15));
-      });
       if (arc) {
         const width = arc.clientWidth;
         const height = arc.clientHeight;
@@ -160,25 +106,6 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const scramble = () => {
-    const finalText = "View Work";
-    const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let tick = 0;
-    const animate = () => {
-      const text = Array.from(finalText).map((char, index) => char === " " || index / finalText.length < tick / 12 ? char : glyphs[Math.floor(Math.random() * glyphs.length)]).join("");
-      setCursorText(text);
-      tick += 1;
-      if (tick <= 12) requestAnimationFrame(animate);
-      else setCursorText(finalText);
-    };
-    animate();
-  };
-
-  const onCursorMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    setCursor({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, active: true });
-  };
-
   const getChars = (text: string) => Array.from(text).map((character, index) => <i key={`${text}-${index}`} style={{ transitionDelay: `${index * 14}ms` }}>{character === " " ? "\u00a0" : character}</i>);
 
   return (
@@ -191,7 +118,7 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
       </header>
 
       <main className="rk-shell">
-        <section className="rk-index" id="rk-index"><h2>۲۳ الگوی قابل استفاده</h2><div className="rk-index-grid">{["Scroll reveal", "Stagger reveal", "Word fade scrub", "Marker wipe", "Flat marquee", "Arc marquee", "Split button", "Footer text swap", "Arrow link", "Awards hover", "Team reveal", "3D work cards", "Sticky stack", "Cursor follower", "Text scramble", "Count-up", "Auto slider", "FAQ accordion", "Image parallax", "Hero parallax", "Inline image reveal", "Rotating icons", "Progressive blur"].map((item, index) => <button type="button" key={item} onClick={() => onNavigate(["rk-entrance", "rk-entrance", "rk-word", "rk-marker", "rk-marquee", "rk-marquee", "rk-hover", "rk-hover", "rk-hover", "rk-awards", "rk-team", "rk-works", "rk-works", "rk-cursor", "rk-cursor", "rk-utilities", "rk-utilities", "rk-utilities", "rk-media", "rk-hero", "rk-media", "rk-media", "rk-media"][index])}>{item}</button>)}</div></section>
+        <section className="rk-index" id="rk-index"><h2>۲۲ الگوی قابل استفاده</h2><div className="rk-index-grid">{[["Scroll reveal", "rk-entrance"], ["Stagger reveal", "rk-entrance"], ["Word fade scrub", "rk-word"], ["Marker wipe", "rk-marker"], ["Flat marquee", "rk-marquee"], ["Arc marquee", "rk-marquee"], ["Split button", "rk-hover"], ["Footer text swap", "rk-hover"], ["Arrow link", "rk-hover"], ["Awards hover", "rk-awards"], ["Hero parallax", "rk-hero"], ["Floating shapes", "lm-hero"], ["Shape-tinted text", "lm-hero"], ["Word rise", "lm-hero"], ["Text shine", "lm-hero"], ["Fanned cards", "lm-fan"], ["3D tilt + glare", "lm-fan"], ["Physics chips", "lm-chips"], ["Source flow", "lm-flow"], ["Progress carousel", "lm-carousel"], ["Shape pile", "lm-footer"], ["Magnetic buttons", "lm-footer"]].map(([item, target]) => <button type="button" key={item} onClick={() => onNavigate(target)}>{item}</button>)}</div></section>
 
         <section className="rk-section" id="rk-entrance"><header><h2>Entrance</h2><p>ورود ساده از پایین با جابه‌جایی ۲۴px، stagger مستقیم فرزندان و حالت fade-only.</p></header><div className="rk-demo rk-reveal-grid" data-rk-enter><span className="rk-label">01 / Reveal + stagger</span>{["Fade + translate", "Per-item delay", "One-time enter"].map((label, index) => <article className="rk-reveal-card rk-enter" style={{ transitionDelay: `${index * 90}ms` }} key={label}><small>0{index + 1}</small><strong>{label}</strong></article>)}</div></section>
 
@@ -205,15 +132,10 @@ export default function ReferenceEffectsKit({ onNavigate }: ReferenceEffectsKitP
 
         <section className="rk-section" id="rk-awards"><header><h2>Awards hover</h2><p>پس‌زمینه از پایین ۰ تا ۱۰۰٪ رشد می‌کند و رنگ محتوا هم‌زمان به رنگ مقابل می‌رسد.</p></header><div className="rk-demo rk-awards-demo"><span className="rk-label">09 / Background rise</span>{[["Awards", "Site of the Day, Honorable Mention", "x03"], ["CSS Pick", "Developer Award, Special Mention", "x12"], ["Site Inspire", "Featured UX/UI and Product Design", "x26"]].map(([title, detail, value]) => <button className="rk-award-row" type="button" key={title}><strong>{title}</strong><small>{detail}</small><span>{value}</span></button>)}</div></section>
 
-        <section className="rk-section" id="rk-team"><header><h2>Team cards</h2><p>پنل شیشه‌ای و fade ترتیبی کاراکترها هنگام hover، با بازگشت سریع‌تر هنگام خروج.</p></header><div className="rk-demo rk-team-grid"><span className="rk-label">10 / Character reveal</span>{[["Marina Costa", "Founder & Creative Director", "one"], ["Marcus Yan", "Design Engineer", "two"]].map(([name, role, tone]) => <article className={`rk-team-card rk-team-card--${tone}`} key={name}><div className="rk-team-card__portrait" /><div className="rk-team-card__info"><strong>{getChars(name)}</strong><p>{getChars(role)}</p></div></article>)}</div></section>
 
-        <section className="rk-section" id="rk-works"><header><h2>Work stack</h2><p>کارت‌های sticky با ورود سه‌بعدی از rotateX و ۴۰px، scale-down کارت قبلی و پارالاکس تصویر.</p></header><div className="rk-demo rk-works-demo"><span className="rk-label">11–13 / Scroll cards</span><div className="rk-works-stack">{workCards.map(([name, color, deep]) => <article data-rk-work className="rk-work-card" style={{ "--rk-card": color, "--rk-card-deep": deep } as React.CSSProperties} key={name}><div className="rk-work-card__media" /><h3>{name}</h3></article>)}</div></div></section>
 
-        <section className="rk-section" id="rk-cursor"><header><h2>Custom cursor</h2><p>دنبال‌کردن نرم اشاره‌گر، تغییر opacity و scramble دوازده‌فریمی برای برچسب.</p></header><div ref={cursorZoneRef} className="rk-demo rk-cursor-zone" onPointerEnter={() => { setCursor((value) => ({ ...value, active: true })); scramble(); }} onPointerLeave={() => setCursor((value) => ({ ...value, active: false }))} onPointerMove={onCursorMove}><span className="rk-label">14–15 / Follower + scramble</span><h3>Move your cursor</h3><div className={`rk-follow-cursor ${cursor.active ? "is-active" : ""}`} style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}>{cursorText}</div></div></section>
 
-        <section className="rk-section" id="rk-utilities"><header><h2>Utilities</h2><p>شمارندهٔ viewport-triggered، اسلایدر خودکار چهارثانیه‌ای و FAQ با چرخش ۱۳۵ درجه.</p></header><div className="rk-demo rk-counter-grid" data-rk-counts><span className="rk-label">16 / Count-up</span><div><strong>{formatCounter(counts[0])}</strong><span>Projects</span></div><div><strong>{formatCounter(counts[1])}%</strong><span>Retention</span></div><div><strong>{formatCounter(counts[2], 1)}</strong><span>Years</span></div></div><div className="rk-demo rk-slider"><span className="rk-label">17 / Auto slider</span>{sliderItems.map(([title, color], index) => <article className={index === slide ? "is-active" : ""} style={{ background: color }} key={title}><h3>{title}</h3></article>)}<div>{sliderItems.map((_, index) => <button key={index} className={index === slide ? "is-active" : ""} onClick={() => setSlide(index)} aria-label={`Slide ${index + 1}`} />)}</div></div><div className="rk-demo rk-faq"><span className="rk-label">18 / FAQ accordion</span>{[["What does a typical project look like?", "Discovery, strategy, design and development are delivered as focused sprints with clear milestones."], ["How long does a project take?", "A landing page can ship in two to three weeks; larger product sites usually take four to eight."], ["Can I pause or cancel anytime?", "Yes. The pattern is intentionally flexible and contains no external state or dependency."]].map(([question, answer], index) => <article className={openFaq === index ? "is-open" : ""} key={question}><button type="button" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}><span>{question}</span><Plus size={19} /></button><div><p>{answer}</p></div></article>)}</div></section>
 
-        <section className="rk-section" id="rk-media"><header><h2>Media + page</h2><p>پارالاکس تصویر، reveal درون‌خطی، pulse، icon چرخان، پارالاکس سربرگ و blur پایین صفحه.</p></header><div className="rk-demo"><span className="rk-label">19 / Image parallax</span><div className="rk-parallax-window"><div data-rk-parallax /></div></div><div className="rk-demo rk-statement" data-rk-statement><span className="rk-label">20 / Inline media reveal</span><p>We turn conversation <span /> into execution.</p></div><div className="rk-demo rk-global-effects"><span className="rk-label">21–23 / Global effects</span><div><b>＋</b><h3>Scroll pulse · Hero parallax · Bottom blur</h3><p>افکت blur روی پایین همین صفحه فعال است.</p></div></div></section>
       </main>
       <footer className="rk-footer"><p>Copy the classes.<br />Keep the motion.</p><button type="button" onClick={() => onNavigate("top")}><ArrowDown size={18} /> بازگشت</button></footer>
       <div className="rk-bottom-blur" aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <i key={index} />)}</div>

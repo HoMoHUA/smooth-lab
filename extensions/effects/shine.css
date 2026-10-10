@@ -1,0 +1,22 @@
+@layer smooth-lab.effects {
+  [data-sl-shine] {
+    background: linear-gradient(
+        100deg,
+        var(--sl-color-accent) 0%,
+        var(--sl-color-accent) 35%,
+        var(--sl-color-shape-2) 48%,
+        var(--sl-color-shape-4) 52%,
+        var(--sl-color-accent) 65%,
+        var(--sl-color-accent) 100%
+      )
+      0 0 / 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: sl-shine 5s var(--sl-ease-in-out) infinite;
+  }
+  @keyframes sl-shine {
+    from { background-position: 100% 0; }
+    to { background-position: 0% 0; }
+  }
+}

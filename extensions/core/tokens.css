@@ -20,6 +20,12 @@
     --sl-color-text-inverse: #ffffff;
     --sl-color-text-muted: #656b7b;
     --sl-color-border: rgba(17, 21, 33, 0.14);
+    /* decorative shape palette (Labs-style floating shapes, piles, tinted text) */
+    --sl-color-shape-1: #4af08a;
+    --sl-color-shape-2: #ffbdf7;
+    --sl-color-shape-3: #5b9cff;
+    --sl-color-shape-4: #fcc934;
+    --sl-color-shape-5: #ff8a3d;
     --sl-gradient-accent: linear-gradient(90deg, #ff9e75, var(--sl-color-accent));
 
     /* type */
@@ -42,5 +48,6 @@
     --sl-duration-enter: 800ms;
     --sl-duration-hover: 240ms;
     --sl-reveal-distance: 24px;
+    --sl-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 }

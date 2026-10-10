@@ -110,14 +110,46 @@ return <section ref={ref}><p data-sl-word-scrub>…</p></section>;
 | Word scrub | `data-sl-word-scrub` | `data-rk-word`، الگوی ۰۲ |
 | Arrow link | `data-sl-arrow-link` | `rk-arrow-link`، الگوی ۰۸ |
 
-## ۶. نقشهٔ ادامهٔ مهاجرت
+## ۶. فاز ۲ — جایگزینی افکت‌های ضعیف با الگوهای Google Labs
+
+بخش‌هایی از Effects Kit که فقط placeholder یا افکت ساده بودند حذف و با اکستنشن‌های جدید جایگزین شدند. الگوها از مشاهدهٔ مستقیم labs.google، notebooklm.google و labs.google/fx استخراج شده‌اند. متن، تصویر، لوگو و کد آن سایت‌ها کپی نشده؛ همهٔ متن‌ها فارسی و تازه و همهٔ تصویرسازی‌ها CSS هستند.
+
+| بخش حذف‌شده | مشکل | جایگزین |
+|---|---|---|
+| Team cards | آدمک‌های دایره‌ای placeholder | کارت‌های بادبزنی + tilt سه‌بعدی با تصویرسازی زنده |
+| Work stack | کارت آبی تخت | Fan cards (باز شدن روی قوس با اسکرول) |
+| Custom cursor | قاب سیاه خالی با یک برچسب | Magnetic buttons + tilt/glare |
+| Utilities (slider، counter، FAQ) | اسلایدر رنگی ساده | Progress carousel تمام‌عرض |
+| Media + page | دو دایرهٔ رنگی روی گرادیان | شکل‌های شناور Labs با parallax عمقی |
+
+| اکستنشن | attribute | الگوی مرجع |
+|---|---|---|
+| Floating shapes | `data-sl-shapes`، `data-sl-shape="hexagon\|circle\|square\|clover\|pill"` | شکل‌های شناور labs.google (`gl-float-*`) |
+| Shape-tinted text | `data-sl-shape-text` + `data-sl-tint` روی شکل | تیتر «Be the first to experiment» که حروف روی شکل رنگ عوض می‌کنند |
+| Word rise | `data-sl-rise` | ورود `appearFromTop` در NotebookLM |
+| Text shine | `data-sl-shine` | `textShine` روی کلمهٔ تأکیدی NotebookLM |
+| Fanned cards | `data-sl-fan` | کارت‌های کج‌شدهٔ labs.google |
+| 3D tilt + glare | `data-sl-tilt` | hover کارت‌های پریمیوم |
+| Physics pile | `data-sl-pile` | برچسب‌های دسته‌بندی و تودهٔ شکل‌های footer در labs.google |
+| Source flow | `data-sl-flow`، `data-sl-flow-source`، `data-sl-flow-hub` | بخش «How it works» در NotebookLM |
+| Progress carousel | `data-sl-carousel` | Hero تمام‌عرض labs.google با نوار پیشرفت |
+| Magnetic | `data-sl-magnetic` | CTAهای footer |
+
+نمایش زنده: بخش `#labs-motion` در صفحهٔ اصلی (`client/src/components/LabsMotionShowcase.tsx`) که فقط با همین اکستنشن‌ها ساخته شده است.
+
+### نکته‌های اتصال
+
+- **ترتیب لایه‌ها:** اگر CSS اکستنشن قبل از reset سایت بارگذاری شود، reset (مثل preflight در Tailwind) دکمه‌های تولیدی اکستنشن را می‌پوشاند. در سایت میزبان ترتیب را صریح اعلام کنید: `@layer theme, base, components, smooth-lab, utilities;` (نمونه در `client/src/index.css`).
+- **اسکرول نرم:** کتابخانه‌هایی که محتوا را با transform جابه‌جا می‌کنند (Lenis یا اسکرول نرم همین سایت) باید در هر فریم `window.dispatchEvent(new Event("sl:scroll"))` بفرستند تا افکت‌های وابسته به اسکرول هم‌گام بمانند.
+
+## ۷. نقشهٔ ادامهٔ مهاجرت
 
 | فاز | کار |
 |---|---|
-| ۲ — افکت‌های تعاملی | Split button / text swap، Awards hover، FAQ accordion، Auto slider، Text scramble، Cursor follower، Progressive blur، Statement pill (`rk-statement`) |
-| ۳ — صحنه‌های اسکرول | Sticky stack، 3D work card، Arc marquee، Hero parallax، Sticky Bento، Pop-out Image (تصویر به‌جای مسیر `/manus-storage` از attribute گرفته شود) |
-| ۴ — ماژول‌های بزرگ | HeroField (canvas ذرات، رنگ از `--sl-color-accent`)، Smooth scroll به‌صورت اکستنشن اختیاری روی کل سند، carousel نمونهٔ Fieldworks |
-| ۵ — پاک‌سازی سایت دمو | سایت فعلی خودش با `adapters/nextpixel.css` مصرف‌کنندهٔ اکستنشن‌ها شود؛ حذف کامپوننت‌های مرده، `clamp`‌های تکراری و `rk-*`/`--rk-*` پس از انتقال هر افکت |
-| ۶ — انتشار | تبدیل `extensions/` به بستهٔ npm مستقل با `exports` برای `.`، `./react`، `./smooth-lab.css` و `./adapters/*` |
+| ۳ — افکت‌های باقی‌ماندهٔ Effects Kit | Split button / text swap، Awards hover، Arc marquee، Hero parallax، Progressive blur، Statement pill |
+| ۴ — صحنه‌های اسکرول | Sticky Bento، Pop-out Image (تصویر به‌جای مسیر `/manus-storage` از attribute گرفته شود)، Mind-map branching از NotebookLM |
+| ۵ — ماژول‌های بزرگ | HeroField (canvas ذرات، رنگ از `--sl-color-accent`)، Smooth scroll به‌صورت اکستنشن اختیاری روی کل سند، carousel نمونهٔ Fieldworks |
+| ۶ — پاک‌سازی سایت دمو | سایت فعلی خودش با `adapters/nextpixel.css` مصرف‌کنندهٔ اکستنشن‌ها شود؛ حذف کامپوننت‌های مرده، `clamp`‌های تکراری و `rk-*`/`--rk-*` پس از انتقال هر افکت |
+| ۷ — انتشار | تبدیل `extensions/` به بستهٔ npm مستقل با `exports` برای `.`، `./react`، `./smooth-lab.css` و `./adapters/*` |
 
 برای هر افکت جدید: یک `effects/<name>.ts` با `mount()` و یک `effects/<name>.css` که فقط `[data-sl-<name>]` و توکن‌های `--sl-*` را استفاده کند، ثبت در `index.ts` و `smooth-lab.css`، و یک آزمون در `tests/`.

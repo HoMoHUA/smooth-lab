@@ -1,0 +1,20 @@
+@layer smooth-lab.effects {
+  [data-sl-fan] {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: var(--sl-fan-gap, 1rem);
+  }
+  [data-sl-fan] > * {
+    transform:
+      translate(
+        calc(var(--sl-fan-dx, 0px) * (1 - var(--sl-fan-p, 1))),
+        calc(var(--sl-fan-o2, 0) * var(--sl-fan-lift, 1.25rem) * var(--sl-fan-p, 1))
+      )
+      rotate(calc(var(--sl-fan-o, 0) * (var(--sl-fan-angle, 6deg) * var(--sl-fan-p, 1) - 4deg * (1 - var(--sl-fan-p, 1)))));
+    transition: translate var(--sl-duration-hover) var(--sl-ease-out);
+  }
+  [data-sl-fan] > *:is(:hover, :focus-within) {
+    translate: 0 -0.9rem;
+  }
+}

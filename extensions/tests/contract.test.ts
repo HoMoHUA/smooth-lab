@@ -23,7 +23,12 @@ const splitSelectorList = (list: string) => {
   }
   return [...parts, current];
 };
-const local = new Set(["--sl-delay", "--sl-i", "--sl-marquee-duration", "--sl-marquee-gap", "--sl-parallax-y", "--sl-parallax-scale"]);
+const local = new Set([
+  "--sl-delay", "--sl-i", "--sl-marquee-duration", "--sl-marquee-gap", "--sl-parallax-y", "--sl-parallax-scale",
+  "--sl-x", "--sl-y", "--sl-size", "--sl-rotate", "--sl-shape-color", "--sl-shape-scroll", "--sl-float-offset",
+  "--sl-fan-dx", "--sl-fan-o", "--sl-fan-o2", "--sl-fan-p", "--sl-fan-angle", "--sl-fan-lift", "--sl-fan-gap",
+  "--sl-flow-length", "--sl-carousel-interval", "--sl-tilt-x", "--sl-tilt-y", "--sl-glare-x", "--sl-glare-y",
+]);
 
 describe("token contract", () => {
   it("every --sl-* variable an extension or adapter reads is declared in tokens.css", () => {

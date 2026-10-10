@@ -11,4 +11,13 @@
 @import "./effects/parallax.css";
 @import "./effects/word-scrub.css";
 @import "./effects/arrow-link.css";
+@import "./effects/shape.css";
+@import "./effects/shape-text.css";
+@import "./effects/pile.css";
+@import "./effects/fan.css";
+@import "./effects/flow.css";
+@import "./effects/rise.css";
+@import "./effects/shine.css";
+@import "./effects/carousel.css";
+@import "./effects/tilt.css";
 @import "./core/reduced-motion.css";

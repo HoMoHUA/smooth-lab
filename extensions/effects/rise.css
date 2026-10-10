@@ -1,0 +1,21 @@
+@layer smooth-lab.effects {
+  [data-sl-rise-mask] {
+    display: inline-block;
+    overflow: clip;
+    padding-block: 0.12em;
+    margin-block: -0.12em;
+    vertical-align: top;
+  }
+  [data-sl-rise-word] {
+    display: inline-block;
+    transition:
+      translate 1s var(--sl-ease-out) calc(var(--sl-i, 0) * 55ms),
+      filter 1s var(--sl-ease-out) calc(var(--sl-i, 0) * 55ms),
+      opacity 0.6s linear calc(var(--sl-i, 0) * 55ms);
+  }
+  [data-sl-rise][data-sl-state="hidden"] [data-sl-rise-word] {
+    translate: 0 110%;
+    filter: blur(8px);
+    opacity: 0;
+  }
+}

@@ -4,14 +4,19 @@
     [data-sl-reveal],
     [data-sl-reveal] > *,
     [data-sl-marker] > [data-sl-marker-text],
-    [data-sl-word] {
+    [data-sl-word],
+    [data-sl-flow-source],
+    [data-sl-rise-word] {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
       animation: none !important;
     }
     [data-sl-marker]::after,
-    [data-sl-marquee-track] {
+    [data-sl-marquee-track],
+    [data-sl-shape],
+    [data-sl-shine],
+    [data-sl-flow-hub] {
       animation: none !important;
     }
     [data-sl-marker]::after {
@@ -19,6 +24,9 @@
     }
     [data-sl-parallax] {
       transform: none;
+    }
+    [data-sl-carousel] > [data-sl-carousel-slide] {
+      transition: none;
     }
   }
 }

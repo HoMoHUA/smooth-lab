@@ -1,0 +1,97 @@
+@layer smooth-lab.effects {
+  [data-sl-carousel] {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+  }
+  [data-sl-carousel] > [data-sl-carousel-slide] {
+    grid-area: 1 / 1;
+    opacity: 0;
+    scale: 1.06;
+    visibility: hidden;
+    transition:
+      opacity 0.9s var(--sl-ease-out),
+      scale 1.6s var(--sl-ease-out),
+      visibility 0s linear 0.9s;
+  }
+  [data-sl-carousel] > [data-sl-carousel-slide="active"] {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+    transition:
+      opacity 0.9s var(--sl-ease-out),
+      scale 1.6s var(--sl-ease-out),
+      visibility 0s;
+  }
+  [data-sl-carousel-controls] {
+    z-index: 2;
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-end: 1.25rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sl-color-surface-inverse) 35%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  [data-sl-carousel-controls] > button {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--sl-color-text-inverse) 40%, transparent);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--sl-color-text-inverse);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--sl-duration-hover) var(--sl-ease-out);
+  }
+  [data-sl-carousel-controls] > button:hover {
+    background: color-mix(in srgb, var(--sl-color-text-inverse) 18%, transparent);
+  }
+  /* ‹ and › are bidi-mirrored characters, so they already point the right way in RTL. */
+  [data-sl-carousel-pills] {
+    display: flex;
+    gap: 0.4rem;
+  }
+  [data-sl-carousel-pill] {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sl-color-text-inverse) 45%, transparent);
+    cursor: pointer;
+    transition: width 0.5s var(--sl-ease-out);
+  }
+  [data-sl-carousel-pill="active"] {
+    width: 3.5rem;
+  }
+  [data-sl-carousel-pill] > i {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--sl-color-text-inverse);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  [data-sl-carousel-pill]:dir(rtl) > i {
+    transform-origin: right;
+  }
+  [data-sl-carousel-pill="active"] > i {
+    animation: sl-carousel-progress var(--sl-carousel-interval, 5500ms) linear both;
+  }
+  [data-sl-carousel]:is(:hover, :focus-within, [data-sl-paused]) [data-sl-carousel-pill="active"] > i {
+    animation-play-state: paused;
+  }
+  @keyframes sl-carousel-progress {
+    to { transform: scaleX(1); }
+  }
+}

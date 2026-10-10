@@ -1,0 +1,20 @@
+@layer smooth-lab.effects {
+  [data-sl-tilt] {
+    position: relative;
+    transform: perspective(900px) rotateX(var(--sl-tilt-x, 0deg)) rotateY(var(--sl-tilt-y, 0deg));
+    transform-style: preserve-3d;
+  }
+  [data-sl-tilt]::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--sl-glare-x, 50%) var(--sl-glare-y, 50%), rgb(255 255 255 / 0.38), transparent 55%);
+    content: "";
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--sl-duration-hover) var(--sl-ease-out);
+  }
+  [data-sl-tilt][data-sl-state="active"]::after {
+    opacity: 1;
+  }
+}

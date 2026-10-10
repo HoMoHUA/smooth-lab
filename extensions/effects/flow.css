@@ -1,0 +1,48 @@
+@layer smooth-lab.effects {
+  [data-sl-flow] {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-sl-flow-svg] {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  [data-sl-flow-line] {
+    fill: none;
+    stroke: var(--sl-color-accent);
+    stroke-opacity: 0.45;
+    stroke-width: 1.5;
+    stroke-dasharray: var(--sl-flow-length, 0);
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1.4s var(--sl-ease-in-out) calc(var(--sl-i, 0) * 120ms);
+  }
+  [data-sl-flow][data-sl-state="hidden"] [data-sl-flow-line] {
+    stroke-dashoffset: var(--sl-flow-length, 0);
+  }
+  [data-sl-flow-dot] {
+    fill: var(--sl-color-accent);
+    opacity: 0;
+  }
+  [data-sl-flow-source],
+  [data-sl-flow-hub] {
+    transition:
+      opacity var(--sl-duration-enter) var(--sl-ease-out),
+      translate var(--sl-duration-enter) var(--sl-ease-out);
+  }
+  [data-sl-flow][data-sl-state="hidden"] [data-sl-flow-source] {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+  [data-sl-flow][data-sl-state="visible"] [data-sl-flow-hub] {
+    animation: sl-flow-pulse 2.6s var(--sl-ease-in-out) 1.2s infinite;
+  }
+  @keyframes sl-flow-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sl-color-accent) 35%, transparent); }
+    50% { box-shadow: 0 0 0 0.9rem color-mix(in srgb, var(--sl-color-accent) 0%, transparent); }
+  }
+}

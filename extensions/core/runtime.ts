@@ -12,8 +12,14 @@ export type ExtensionContext = {
   reducedMotion: boolean;
   /** Run `callback` once when `element` enters the viewport. */
   onEnter: (element: Element, callback: () => void, options?: { threshold?: number; rootMargin?: string }) => Cleanup;
-  /** Run `callback` on every animation frame while the page scrolls or resizes. */
+  /**
+   * Run `callback` on every animation frame while the page scrolls or resizes.
+   * Smooth-scroll libraries that move content with transforms should dispatch
+   * `window.dispatchEvent(new Event("sl:scroll"))` on each of their frames.
+   */
   onFrame: (callback: () => void) => Cleanup;
+  /** Run `callback(time)` on every animation frame while `element` is on screen (continuous animations). */
+  whileVisible: (element: Element, callback: (time: number) => void) => Cleanup;
 };
 
 export type SmoothLabExtension = {
@@ -52,6 +58,7 @@ export const numberOption = (element: HTMLElement, name: string, fallback: numbe
 };
 
 const STATE = attr("state");
+const SCROLL_EVENT = "sl:scroll";
 export const setState = (element: Element, state: string) => element.setAttribute(STATE, state);
 
 function createScheduler() {
@@ -72,6 +79,7 @@ function createScheduler() {
     if (frameCallbacks.size === 0) {
       window.addEventListener("scroll", request, { passive: true });
       window.addEventListener("resize", request);
+      window.addEventListener(SCROLL_EVENT, request);
     }
     frameCallbacks.add(callback);
     request();
@@ -80,6 +88,7 @@ function createScheduler() {
       if (frameCallbacks.size === 0) {
         window.removeEventListener("scroll", request);
         window.removeEventListener("resize", request);
+        window.removeEventListener(SCROLL_EVENT, request);
         if (frame) cancelAnimationFrame(frame);
         frame = 0;
       }
@@ -115,22 +124,43 @@ function createScheduler() {
     };
   };
 
+  const whileVisible: ExtensionContext["whileVisible"] = (element, callback) => {
+    let loop = 0;
+    const step = (time: number) => {
+      callback(time);
+      loop = requestAnimationFrame(step);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !loop) loop = requestAnimationFrame(step);
+      if (!entry.isIntersecting && loop) {
+        cancelAnimationFrame(loop);
+        loop = 0;
+      }
+    });
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(loop);
+    };
+  };
+
   const destroy = () => {
     observers.forEach((observer) => observer.disconnect());
     observers.clear();
     frameCallbacks.clear();
     window.removeEventListener("scroll", request);
     window.removeEventListener("resize", request);
+    window.removeEventListener(SCROLL_EVENT, request);
     if (frame) cancelAnimationFrame(frame);
   };
 
-  return { onFrame, onEnter, destroy };
+  return { onFrame, onEnter, whileVisible, destroy };
 }
 
 export function createSmoothLab({ root = document, extensions, observeMutations = true }: SmoothLabOptions): SmoothLabInstance {
   const reducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scheduler = createScheduler();
-  const context: ExtensionContext = { reducedMotion, onEnter: scheduler.onEnter, onFrame: scheduler.onFrame };
+  const context: ExtensionContext = { reducedMotion, onEnter: scheduler.onEnter, onFrame: scheduler.onFrame, whileVisible: scheduler.whileVisible };
   const mounted = new Map<HTMLElement, Map<string, Cleanup | void>>();
 
   const refresh = () => {
