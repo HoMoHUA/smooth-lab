@@ -1,0 +1,46 @@
+/*
+ * Smooth Lab — token contract.
+ *
+ * Every extension reads ONLY these --sl-* variables. Defaults sit in a layer and
+ * under :where(:root), so any declaration from the host site wins without
+ * !important. To connect a host design system, map its tokens onto these names
+ * (see ../adapters/*.css) or call connectTheme() from the runtime.
+ */
+@layer smooth-lab.tokens {
+  :where(:root) {
+    /* color */
+    --sl-color-accent: #315cff;
+    --sl-color-accent-contrast: #ffffff;
+    --sl-color-highlight: #d7ff4f;
+    --sl-color-highlight-contrast: #111521;
+    --sl-color-surface: #f7f7f3;
+    --sl-color-surface-raised: #ffffff;
+    --sl-color-surface-inverse: #111521;
+    --sl-color-text: #111521;
+    --sl-color-text-inverse: #ffffff;
+    --sl-color-text-muted: #656b7b;
+    --sl-color-border: rgba(17, 21, 33, 0.14);
+    --sl-gradient-accent: linear-gradient(90deg, #ff9e75, var(--sl-color-accent));
+
+    /* type */
+    --sl-font-body: inherit;
+    --sl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+    /* shape and space */
+    --sl-radius-sm: 0.55rem;
+    --sl-radius-md: 1rem;
+    --sl-radius-lg: 1.5rem;
+    --sl-space-1: 0.5rem;
+    --sl-space-2: 0.75rem;
+    --sl-space-3: 1.125rem;
+    --sl-space-4: 1.75rem;
+
+    /* motion */
+    --sl-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --sl-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --sl-ease-standard: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    --sl-duration-enter: 800ms;
+    --sl-duration-hover: 240ms;
+    --sl-reveal-distance: 24px;
+  }
+}

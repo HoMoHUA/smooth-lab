@@ -1,0 +1,6 @@
+@layer smooth-lab.effects {
+  [data-sl-word] {
+    opacity: 0.15;
+    transition: opacity 0.18s linear;
+  }
+}

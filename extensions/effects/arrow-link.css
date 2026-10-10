@@ -1,0 +1,36 @@
+@layer smooth-lab.effects {
+  [data-sl-arrow-link] {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    color: inherit;
+    text-decoration: none;
+  }
+  [data-sl-arrow-link]::after {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.2em;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--sl-duration-hover) var(--sl-ease-out);
+  }
+  [data-sl-arrow-link]:dir(rtl)::after {
+    transform-origin: right;
+  }
+  [data-sl-arrow-link]:is(:hover, :focus-visible)::after {
+    transform: scaleX(1);
+  }
+  [data-sl-arrow-link] > svg {
+    transition: translate var(--sl-duration-hover) var(--sl-ease-out);
+  }
+  [data-sl-arrow-link]:is(:hover, :focus-visible) > svg {
+    translate: 4px 0;
+  }
+  [data-sl-arrow-link]:dir(rtl):is(:hover, :focus-visible) > svg {
+    translate: -4px 0;
+  }
+}

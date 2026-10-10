@@ -1,0 +1,57 @@
+<!doctype html>
+<!--
+  A stand-in "host site" with its own design system (Bootstrap-style --bs-* tokens).
+  Build first: pnpm build:ext — then open this file in a browser.
+-->
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Host site + Smooth Lab</title>
+    <style>
+      /* The host's own system — Smooth Lab never redefines these. */
+      :root {
+        --bs-primary: #d6336c;
+        --bs-warning: #ffc107;
+        --bs-body-bg: #fff8f0;
+        --bs-body-color: #2b2118;
+        --bs-secondary-color: #7a6a5c;
+        --bs-border-color: #e8d9c8;
+        --bs-border-radius: 0.25rem;
+        --bs-font-monospace: ui-monospace, monospace;
+      }
+      body { margin: 0; font-family: system-ui, sans-serif; background: var(--bs-body-bg); color: var(--bs-body-color); }
+      section { padding: 4rem 8%; border-bottom: 1px solid var(--bs-border-color); }
+      h1 { font-size: 3rem; margin: 0 0 1rem; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; list-style: none; padding: 0; }
+      .grid li { padding: 1.5rem; background: #fff; border-radius: var(--bs-border-radius); }
+      .frame { height: 18rem; overflow: hidden; border-radius: var(--bs-border-radius); }
+      .frame div { height: 100%; background: linear-gradient(135deg, var(--bs-primary), var(--bs-warning)); }
+      .big { font-size: 2.5rem; font-weight: 700; line-height: 1.2; }
+      .spacer { height: 60vh; }
+    </style>
+    <link rel="stylesheet" href="../../dist/extensions/smooth-lab.css" />
+    <link rel="stylesheet" href="../../dist/extensions/adapters/bootstrap.css" />
+    <script src="../../dist/extensions/smooth-lab.iife.js" defer></script>
+  </head>
+  <body>
+    <section>
+      <h1><span data-sl-marker>سیستم دیزاین میزبان</span></h1>
+      <a data-sl-arrow-link href="#more">ادامه</a>
+    </section>
+    <section data-sl-marquee data-sl-marquee-duration="12" class="big">
+      <span>REVEAL</span><span>✦</span><span>MARQUEE</span><span>✦</span><span>PARALLAX</span><span>✦</span>
+    </section>
+    <div class="spacer"></div>
+    <section id="more">
+      <ul class="grid" data-sl-reveal data-sl-stagger="120">
+        <li><strong data-sl-count-up="72">0</strong>٪</li>
+        <li><strong data-sl-count-up="98">0</strong>٪</li>
+        <li><strong data-sl-count-up="8.2" data-sl-count-decimals="1">0</strong>x</li>
+      </ul>
+    </section>
+    <section><p class="big" data-sl-word-scrub>حرکت خوب پیام ثابت را به تجربه‌ای هدایت‌شده تبدیل می‌کند.</p></section>
+    <section><div class="frame"><div data-sl-parallax="20"></div></div></section>
+    <div class="spacer"></div>
+  </body>
+</html>

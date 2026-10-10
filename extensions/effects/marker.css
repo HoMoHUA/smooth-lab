@@ -1,0 +1,39 @@
+@layer smooth-lab.effects {
+  [data-sl-marker] {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  [data-sl-marker]::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: var(--sl-color-accent);
+    content: "";
+    clip-path: inset(0 100% 0 0);
+    pointer-events: none;
+  }
+  [data-sl-marker][data-sl-state="hidden"] > [data-sl-marker-text],
+  [data-sl-marker][data-sl-state="visible"] > [data-sl-marker-text] {
+    opacity: 0;
+  }
+  [data-sl-marker][data-sl-state="visible"] > [data-sl-marker-text] {
+    animation: sl-show 1ms linear both;
+    animation-delay: calc(var(--sl-i, 0) * 350ms + 680ms);
+  }
+  [data-sl-marker][data-sl-state="visible"]::after {
+    animation: sl-marker 1.35s var(--sl-ease-standard) both;
+    animation-delay: calc(var(--sl-i, 0) * 350ms);
+  }
+  [data-sl-marker][data-sl-state="done"]::after {
+    display: none;
+  }
+  @keyframes sl-marker {
+    0% { clip-path: inset(0 100% 0 0); }
+    45% { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(0 0 0 100%); }
+  }
+  @keyframes sl-show {
+    to { opacity: 1; }
+  }
+}

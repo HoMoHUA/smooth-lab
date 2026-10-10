@@ -1,0 +1,6 @@
+@layer smooth-lab.effects {
+  [data-sl-parallax] {
+    transform: translate3d(0, var(--sl-parallax-y, 0), 0) scale(var(--sl-parallax-scale, 1.2));
+    will-change: transform;
+  }
+}

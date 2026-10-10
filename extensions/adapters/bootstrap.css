@@ -1,0 +1,21 @@
+/* Bootstrap 5.3 hosts (dark mode via [data-bs-theme]). */
+@layer smooth-lab.adapter {
+  :where(:root, [data-bs-theme]) {
+    --sl-color-accent: var(--bs-primary);
+    --sl-color-accent-contrast: var(--bs-white, #fff);
+    --sl-color-highlight: var(--bs-warning);
+    --sl-color-highlight-contrast: var(--bs-dark);
+    --sl-color-surface: var(--bs-body-bg);
+    --sl-color-surface-raised: var(--bs-tertiary-bg);
+    --sl-color-surface-inverse: var(--bs-emphasis-color);
+    --sl-color-text: var(--bs-body-color);
+    --sl-color-text-inverse: var(--bs-body-bg);
+    --sl-color-text-muted: var(--bs-secondary-color);
+    --sl-color-border: var(--bs-border-color);
+    --sl-font-body: var(--bs-body-font-family);
+    --sl-font-mono: var(--bs-font-monospace);
+    --sl-radius-sm: var(--bs-border-radius-sm);
+    --sl-radius-md: var(--bs-border-radius);
+    --sl-radius-lg: var(--bs-border-radius-lg);
+  }
+}

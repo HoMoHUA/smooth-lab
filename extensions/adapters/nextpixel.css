@@ -1,0 +1,19 @@
+/* This repo's own NeXTPixel Motion System (--ds-*), so the existing site can adopt the extensions. */
+@layer smooth-lab.adapter {
+  :where(:root) {
+    --sl-color-accent: var(--ds-cobalt);
+    --sl-color-highlight: var(--ds-lime);
+    --sl-color-surface: var(--ds-paper);
+    --sl-color-surface-inverse: var(--ds-ink);
+    --sl-color-text: var(--ds-ink);
+    --sl-radius-sm: var(--ds-radius-sm);
+    --sl-radius-md: var(--ds-radius-md);
+    --sl-radius-lg: var(--ds-radius-lg);
+    --sl-space-1: var(--ds-space-1);
+    --sl-space-2: var(--ds-space-2);
+    --sl-space-3: var(--ds-space-3);
+    --sl-space-4: var(--ds-space-4);
+    --sl-ease-out: var(--ds-ease-out);
+    --sl-ease-in-out: var(--ds-ease-in-out);
+  }
+}

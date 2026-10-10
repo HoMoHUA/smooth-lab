@@ -1,0 +1,14 @@
+/*
+ * Smooth Lab extension bundle. Declares its layer order first so the host can
+ * place it relative to its own layers, e.g. `@layer reset, smooth-lab, app;`.
+ * No element selectors, no resets, no fonts — only [data-sl-*] opt-in hooks.
+ */
+@layer smooth-lab.tokens, smooth-lab.adapter, smooth-lab.effects;
+@import "./core/tokens.css";
+@import "./effects/reveal.css";
+@import "./effects/marker.css";
+@import "./effects/marquee.css";
+@import "./effects/parallax.css";
+@import "./effects/word-scrub.css";
+@import "./effects/arrow-link.css";
+@import "./core/reduced-motion.css";

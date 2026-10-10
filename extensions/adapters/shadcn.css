@@ -1,0 +1,19 @@
+/* shadcn/ui + Tailwind v4 hosts (tokens hold full colors, dark mode via .dark). */
+@layer smooth-lab.adapter {
+  :where(:root, .dark, [data-theme]) {
+    --sl-color-accent: var(--primary);
+    --sl-color-accent-contrast: var(--primary-foreground);
+    --sl-color-highlight: var(--accent);
+    --sl-color-highlight-contrast: var(--accent-foreground);
+    --sl-color-surface: var(--background);
+    --sl-color-surface-raised: var(--card);
+    --sl-color-surface-inverse: var(--foreground);
+    --sl-color-text: var(--foreground);
+    --sl-color-text-inverse: var(--background);
+    --sl-color-text-muted: var(--muted-foreground);
+    --sl-color-border: var(--border);
+    --sl-radius-md: var(--radius);
+    --sl-radius-sm: calc(var(--radius) - 4px);
+    --sl-radius-lg: calc(var(--radius) + 4px);
+  }
+}

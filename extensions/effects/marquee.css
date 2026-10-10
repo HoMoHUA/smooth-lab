@@ -1,0 +1,26 @@
+@layer smooth-lab.effects {
+  [data-sl-marquee] {
+    overflow: hidden;
+  }
+  [data-sl-marquee-track],
+  [data-sl-marquee-group] {
+    display: flex;
+    gap: var(--sl-marquee-gap, 2rem);
+    width: max-content;
+  }
+  [data-sl-marquee-track] {
+    animation: sl-marquee var(--sl-marquee-duration, 22s) linear infinite;
+  }
+  [data-sl-marquee]:hover > [data-sl-marquee-track] {
+    animation-play-state: paused;
+  }
+  [data-sl-marquee]:dir(rtl) > [data-sl-marquee-track] {
+    animation-name: sl-marquee-rtl;
+  }
+  @keyframes sl-marquee {
+    to { transform: translateX(calc(-50% - var(--sl-marquee-gap, 2rem) / 2)); }
+  }
+  @keyframes sl-marquee-rtl {
+    to { transform: translateX(calc(50% + var(--sl-marquee-gap, 2rem) / 2)); }
+  }
+}

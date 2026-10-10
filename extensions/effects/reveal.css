@@ -1,0 +1,13 @@
+@layer smooth-lab.effects {
+  [data-sl-reveal][data-sl-state="hidden"]:not([data-sl-stagger]),
+  [data-sl-reveal][data-sl-stagger][data-sl-state="hidden"] > * {
+    opacity: 0;
+    transform: translateY(var(--sl-reveal-distance));
+  }
+  [data-sl-reveal]:not([data-sl-stagger]),
+  [data-sl-reveal][data-sl-stagger] > * {
+    transition:
+      opacity var(--sl-duration-enter) var(--sl-ease-standard) var(--sl-delay, 0ms),
+      transform var(--sl-duration-enter) var(--sl-ease-standard) var(--sl-delay, 0ms);
+  }
+}

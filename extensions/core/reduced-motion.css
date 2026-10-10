@@ -1,0 +1,24 @@
+/* Scoped to Smooth Lab elements only — the host site's own motion is left alone. */
+@layer smooth-lab.effects {
+  @media (prefers-reduced-motion: reduce) {
+    [data-sl-reveal],
+    [data-sl-reveal] > *,
+    [data-sl-marker] > [data-sl-marker-text],
+    [data-sl-word] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    [data-sl-marker]::after,
+    [data-sl-marquee-track] {
+      animation: none !important;
+    }
+    [data-sl-marker]::after {
+      display: none;
+    }
+    [data-sl-parallax] {
+      transform: none;
+    }
+  }
+}

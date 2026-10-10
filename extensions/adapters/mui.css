@@ -1,0 +1,17 @@
+/* MUI with CSS theme variables enabled (cssVariables: true). */
+@layer smooth-lab.adapter {
+  :where(:root, [data-mui-color-scheme]) {
+    --sl-color-accent: var(--mui-palette-primary-main);
+    --sl-color-accent-contrast: var(--mui-palette-primary-contrastText);
+    --sl-color-highlight: var(--mui-palette-secondary-main);
+    --sl-color-highlight-contrast: var(--mui-palette-secondary-contrastText);
+    --sl-color-surface: var(--mui-palette-background-default);
+    --sl-color-surface-raised: var(--mui-palette-background-paper);
+    --sl-color-surface-inverse: var(--mui-palette-text-primary);
+    --sl-color-text: var(--mui-palette-text-primary);
+    --sl-color-text-inverse: var(--mui-palette-background-default);
+    --sl-color-text-muted: var(--mui-palette-text-secondary);
+    --sl-color-border: var(--mui-palette-divider);
+    --sl-radius-md: var(--mui-shape-borderRadius);
+  }
+}
