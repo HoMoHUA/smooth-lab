@@ -182,3 +182,7 @@ return <section ref={ref}><p data-sl-word-scrub>…</p></section>;
 | ۷ — انتشار | تبدیل `extensions/` به بستهٔ npm مستقل با `exports` برای `.`، `./react`، `./smooth-lab.css` و `./adapters/*` |
 
 برای هر افکت جدید: یک `effects/<name>.ts` با `mount()` و یک `effects/<name>.css` که فقط `[data-sl-<name>]` و توکن‌های `--sl-*` را استفاده کند، ثبت در `index.ts` و `smooth-lab.css`، و یک آزمون در `tests/`.
+
+## ۹. راهنمای استفادهٔ تک‌به‌تک
+
+راهنمای اتصال هر افکت و هر کامپوننت به سیستم‌های دیزاین shadcn/Tailwind، Bootstrap، MUI، CSS اختصاصی و WordPress در [`docs/usage/`](docs/usage/README.md) است.
